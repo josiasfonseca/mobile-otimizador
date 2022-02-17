@@ -26,50 +26,14 @@ export default function App() {
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{ title: 'Overview' }}
+          options={{ headerShown: false }}
         />
-        <Stack.Screen name="Main" component={Main} />
+        <Stack.Screen
+          name="Main"
+          component={Main}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
 }
-// const [logado, setLogado] = useState(null)
-// return (
-//   <View style={styles.container}>
-//     <StatusBar
-//       barStyle="dark-content"
-//       hidden={true}
-//       backgroundColor="#0066CC"
-//       translucent={false}
-//       networkActivityIndicatorVisible={true}
-//     />
-//     {logado != null ? (
-//       <View>
-//         <Main />
-//       </View>
-//     ) : (
-//       <View>
-//         <Login />
-//       </View>
-//     )}
-//   </View>
-// )
-// }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 30,
-    backgroundColor: '#13B58C',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  statusBar: {
-    // width: '100%',
-    // height: '500',
-    // backgroundColor: 'red',
-    // marginTop: 20,
-    // alignItems: 'center',
-    // textAlignVertical: 'top',
-  },
-})

@@ -25,31 +25,33 @@ export default function Login({ navigation }) {
       Alert.alert('Informe o usuário e a senha!')
       return
     }
-    let response = await fetch(
-      'http://localhost:8000/api/auth/login?NOME=' +
-        user +
-        '&password=' +
-        password,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        setToken(res.access_token)
-        Alert.alert('Logado')
-        navigation.navigate('Main')
-      })
-      .catch((err) => Alert.alert(JSON.stringify(err)))
+    navigation.navigate('Main')
+    // let response = await fetch(
+    //   'http://localhost:8000/api/auth/login?NOME=' +
+    //     user +
+    //     '&password=' +
+    //     password,
+    //   {
+    //     method: 'POST',
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //   }
+    // )
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     setToken(res.access_token)
+    //     Alert.alert('Logado')
+    //     navigation.navigate('Main')
+    //   })
+    //   .catch((err) => Alert.alert(JSON.stringify(err)))
   }
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>

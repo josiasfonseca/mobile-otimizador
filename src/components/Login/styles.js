@@ -1,6 +1,11 @@
 import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 60,
+    backgroundColor: '#13B58C',
+  },
   welcome: {
     marginTop: 5,
     width: '100%',
@@ -8,7 +13,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   messageWelcome: {
-    fontSize: 25,
+    fontSize: 20,
     color: '#ffffff',
     padding: 10,
     marginTop: 10,
@@ -34,7 +39,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   login: {
-    marginTop: 15,
+    marginTop: 11,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -49,7 +54,7 @@ const styles = StyleSheet.create({
   inputUsuario: {
     // backgroundColor: 'blue',
     height: 50,
-    marginTop: 35,
+    marginTop: 20,
     marginLeft: 30,
     marginRight: 30,
     width: '85%',

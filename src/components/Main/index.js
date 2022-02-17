@@ -1,10 +1,29 @@
-import { View, Text } from 'react-native'
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
+} from 'react-native'
+import styles from './styles'
 
-export default function Login() {
+export default function Login({ navigation }) {
   return (
-    <View>
-      <Text>Main</Text>
-      <Text>Main 123 123 123</Text>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View>
+          <View style={styles.msg}>
+            <Text style={styles.msg1}>Benvindo ao sistema!</Text>
+          </View>
+          <View style={styles.msg}>
+            <Text style={styles.msg1}>Otimizador Contábil</Text>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   )
 }
