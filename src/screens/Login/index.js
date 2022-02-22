@@ -12,6 +12,8 @@ import {
 import { TextInput } from 'react-native'
 import styles from './styles'
 import { faArrowRightToFile } from '@fortawesome/free-solid-svg-icons'
+import { CommonActions } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Login({ navigation }) {
   const [user, setUser] = useState(null)
@@ -25,7 +27,44 @@ export default function Login({ navigation }) {
       Alert.alert('Informe o usuário e a senha!')
       return
     }
-    navigation.navigate('Main')
+    const storeData = async (value) => {
+      try {
+        await AsyncStorage.setItem(
+          'TOKEN',
+          JSON.stringify({ user: 'josias', password: '123456' })
+        )
+      } catch (e) {
+        // saving error
+      }
+    }
+    await storeData()
+    const getToken = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('TOKEN')
+        return jsonValue != null ? JSON.parse(jsonValue) : null
+      } catch (e) {
+        console.log(e, 'sd')
+      }
+    }
+    console.log(await getToken())
+    if (getToken) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }],
+      })
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 0,
+      //     routes: [{ name: 'Main' }],
+      //   })
+      // )
+    }
+    // navigation.dispatch(
+    //   CommonActions.reset({
+    //     index: 0,
+    //     routes: [{ name: 'Main' }],
+    //   })
+    // )
     // let response = await fetch(
     //   'http://localhost:8000/api/auth/login?NOME=' +
     //     user +
