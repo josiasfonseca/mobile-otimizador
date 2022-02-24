@@ -23,10 +23,10 @@ export default function Login({ navigation }) {
   // const [authUser, setAuthUser] = useState(null)
 
   async function auth() {
-    if (user == null || password == null) {
-      Alert.alert('Informe o usuário e a senha!')
-      return
-    }
+    // if (user == null || password == null) {
+    //   Alert.alert('Informe o usuário e a senha!')
+    //   return
+    // }
     const storeData = async (value) => {
       try {
         await AsyncStorage.setItem(
@@ -47,10 +47,11 @@ export default function Login({ navigation }) {
       }
     }
     console.log(await getToken())
-    if (getToken) {
+    if (await getToken) {
+      // Alert.alert('Login realizado!')
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Main' }],
+        routes: [{ name: 'Home' }],
       })
       // navigation.dispatch(
       //   CommonActions.reset({
@@ -91,6 +92,7 @@ export default function Login({ navigation }) {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
+      onPress={Keyboard.dismiss}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>

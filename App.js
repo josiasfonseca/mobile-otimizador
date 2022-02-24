@@ -1,11 +1,8 @@
-import { useState } from 'react'
-import { StyleSheet, Text, View, StatusBar, Button } from 'react-native'
 import Login from './src/screens/Login'
-import Main from './src/screens/Main'
+import Home from './src/screens/Home'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { CommonActions } from '@react-navigation/native'
+import Controle from './src/screens/Controle'
 
 const Stack = createNativeStackNavigator()
 
@@ -18,7 +15,8 @@ export default function App() {
           component={Login}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Main" component={Main} />
+        <Stack.Screen name="Home" component={Home}  options={{ headerShown: false }}/>
+        <Stack.Screen name="Controle" component={Controle}  options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   )
