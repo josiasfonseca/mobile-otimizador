@@ -95,7 +95,7 @@ export default function Home({ navigation }) {
                     <Button title='Controle' color="#7d807e" style={styles.inputButton} onPress={() => navigation.navigate('Controle')}></Button>
                 </View>
                 <View style={styles.buttonImportador}>
-                    <Button title='Importador' color="#7a7a75" style={styles.inputButton}></Button>
+                    <Button title='Importador' color="#7a7a75" style={styles.inputButton} onPress={() => navigation.navigate('Importador')}></Button>
                 </View>
             </View>
         </TouchableOpacity>
@@ -106,7 +106,7 @@ export default function Home({ navigation }) {
 
         <View style={styles.container}>
             <View style={styles.viewHeader}>
-                <Text style={styles.header}>Operações</Text>
+                <Text style={styles.header}>Home</Text>
             </View>
             <View style={styles.viewFlatList}>
                 <FlatList

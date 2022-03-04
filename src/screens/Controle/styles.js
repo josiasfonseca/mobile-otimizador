@@ -6,15 +6,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: '#E5E5E5',
     marginTop: StatusBar.currentHeight || 0,
-    // backgroundColor: '#13B58C',
   },
-  // head: { height: 40, backgroundColor: '#f1f8ff' },
-  // text: { margin: 6 },
   viewHeader: {
     width: '100%',
     height: 70,
     alignItems: 'center',
-    // justifyContent: 'center',
     backgroundColor: '#13B58C'
   },  
   header: {
