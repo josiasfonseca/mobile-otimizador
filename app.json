@@ -7,9 +7,9 @@
     "icon": "./assets/icon.png",
     "platforms": [ "ios", "android"],
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo_otimizador.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fefefe"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -28,9 +28,6 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.otimizador.contabil"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }

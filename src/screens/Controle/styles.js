@@ -13,6 +13,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#13B58C'
   },  
+  viewReferencia: {
+    flexDirection: 'row',
+    width: '100%'
+  },  
+  textReferencia: {
+    color: '#000',
+    textAlign: 'left'
+  },
+  inputAnoReferencia: {
+    backgroundColor: '#13B58C',
+    letterSpacing: 2,
+    width: 70,
+    textAlign: 'center',
+    color: '#fff',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
   header: {
     marginTop: 20,
     fontSize: 20,

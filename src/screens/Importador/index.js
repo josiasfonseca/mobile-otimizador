@@ -52,13 +52,12 @@ export default function Importador({ navigation }) {
     // }
     return (
         // <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
-            <View style={{ width: '100%' }}>
+            // <View style={{ width: '100%' }}>
                 <View style={styles.container}>
                     
-                    <View style={styles.viewHeader}>
+                    {/* <View style={styles.viewHeader}>
                         <Text style={styles.header}>Importador</Text>
-                        {/* <Button title='Controle' color="#7d807e" style={styles.inputButton} onPress={() => navigation.navigate('Controle')}></Button> */}
-                    </View>
+                    </View> */}
                     <View style={styles.viewImportCliente}>
                         {/* <View style={styles.viewTitleImportadorCliente}>
                             <Text style={styles.titleImportadorCliente}>Importar arquivos Clientes</Text>
@@ -67,11 +66,6 @@ export default function Importador({ navigation }) {
                             <View style={styles.viewImports}>
                                 <View style={styles.fileCliente}>
                                     <Text>Arquivo cliente</Text>
-                                    <TouchableOpacity
-                                        style={styles.buttonStyle}
-                                        onPress={teste}>
-                                        <Text style={styles.buttonTextStyle}>Select File</Text>
-                                    </TouchableOpacity>
                                     <Button
                                         title='importar'
                                         onPress={teste}
@@ -107,7 +101,7 @@ export default function Importador({ navigation }) {
                         <View></View>
                     </View>
                 </View>
-            </View>
+            // </View>
         // </SafeAreaView>
     )
 }

@@ -105,9 +105,9 @@ export default function Home({ navigation }) {
         //   <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
 
         <View style={styles.container}>
-            <View style={styles.viewHeader}>
+            {/* <View style={styles.viewHeader}>
                 <Text style={styles.header}>Home</Text>
-            </View>
+            </View> */}
             <View style={styles.viewFlatList}>
                 <FlatList
                     data={DATA}

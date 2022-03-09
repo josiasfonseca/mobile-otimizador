@@ -12,7 +12,6 @@ import {
 import { TextInput } from 'react-native'
 import styles from './styles'
 import { faArrowRightToFile } from '@fortawesome/free-solid-svg-icons'
-import { CommonActions } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Login({ navigation }) {

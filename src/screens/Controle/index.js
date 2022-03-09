@@ -73,7 +73,7 @@ export default function Controle({ navigation }) {
             status: 1,
         },
     ];
-    
+
     const renderItem = ({ item }) => (
         <TouchableOpacity style={item.status == 1 ? styles.item : styles.itemError}>
             <View style={styles.row} >
@@ -94,12 +94,14 @@ export default function Controle({ navigation }) {
         //   <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
 
         <View style={styles.container}>
-            <View style={styles.viewHeader}>
+            {/* <View style={styles.viewHeader}>
                 <Text style={styles.header}>Controles</Text>
-            </View>
-            <View style={styles.viewReferencia}>
-                <Text style={styles.textReferencia}>Ano Referencia: </Text>
-                <TextInput placeholder='Ano' keyboardType='numeric' maxLength={4} />
+            </View> */}
+            <View >
+                <View style={styles.viewReferencia}>
+                    <Text style={styles.textReferencia}>Ano Referencia: </Text>
+                    <TextInput style={styles.inputAnoReferencia} placeholder='Ano' keyboardType='numeric' maxLength={4} length={15}/>
+                </View>
             </View>
             <View style={styles.viewFlatList}>
                 <FlatList
