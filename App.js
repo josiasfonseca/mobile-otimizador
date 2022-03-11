@@ -1,22 +1,42 @@
 import 'react-native-gesture-handler';
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Controle from './src/screens/Controle'
 import Login from './src/screens/Login'
 import Home from './src/screens/Home'
-import Main from './src/screens/Main'
 import Importador from './src/screens/Importador'
 import { NavigationContainer } from '@react-navigation/native'
+import { useEffect } from 'react';
+import { Alert, BackHandler } from 'react-native';
 
-const Stack = createNativeStackNavigator()
 const Drawer = createDrawerNavigator();
 
 export default function App() {
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Atenção!", "Deseja sair do sistema ?", [
+        {
+          text: "Cancelar",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "Sim", onPress: () => BackHandler.exitApp() }
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const screensOptions = {
     headerTitleAlign: 'center',
     headerBackTitleVisible: false,
-    headerStyle: { backgroundColor: '#13B58C', height: 60 },
+    headerStyle: { backgroundColor: '#13B58C', height: 90 },
     headerTitleStyle: { color: '#fff', fontSize: 20 },
     backBehavior: 'history',
     drawerHideStatusBarOnOpen: true,

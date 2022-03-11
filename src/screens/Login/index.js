@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  ToastAndroid
 } from 'react-native'
 import { TextInput } from 'react-native'
 import styles from './styles'
@@ -15,15 +16,19 @@ import { faArrowRightToFile } from '@fortawesome/free-solid-svg-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Login({ navigation }) {
+
   const [user, setUser] = useState(null)
   const [password, setPassword] = useState(null)
   const [error, setError] = useState(null)
   const [token, setToken] = useState(null)
   const [url] = useState('https://api-otimizador.herokuapp.com/api/')
   const [urlAuth, setUrlAuth] = useState('')
-  // const [authUser, setAuthUser] = useState(null)
 
-  // useEffect(() => {
+  const showToast = (message) => {
+    console.log(message)
+    ToastAndroid.show(message, ToastAndroid.LONG);
+  };
+
 
   async function auth() {
     setUrlAuth(url + 'auth/login')
@@ -38,18 +43,17 @@ export default function Login({ navigation }) {
           JSON.stringify({ user: user, password: password })
         )
       } catch (e) {
-        console.log(e)
+        showToast(JSON.stringify(e))
       }
     }
 
     await storeData()
-    console.log('asdf')
     const getToken = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('TOKEN')
         return jsonValue != null ? JSON.parse(jsonValue) : null
       } catch (e) {
-        Alert.alert('Error Storage!')
+        showToast('Error Storage!')
       }
     }
     if (await getToken()) {
@@ -71,20 +75,24 @@ export default function Login({ navigation }) {
         },
       }
     )
-      .then(async (res) => await res.json())
-      .then(async (res) => {
-        // console.log(res)
+      .then(res => {
+        console.log(res)
+        return res.json()
+      })
+      .then((res) => {
+        console.log(res)
         if (res.access_token) {
-          await setToken(res.access_token)
+          setToken(res.access_token)
+          showToast('Logado com sucesso!')
           navigation.reset({
             index: 0,
             routes: [{ name: 'Home' }],
           })
         } else {
-          Alert.alert('Falha de autenticação!')
+          showToast('Falha de autenticação!')
         }
       })
-      .catch(() => Alert.alert('Erro de conexão!'))
+      .catch(() => showToast('Erro de conexão!'))
   }
   // });
   return (
