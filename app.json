@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "platforms": [ "ios", "android"],
     "splash": {
-      "image": "./assets/logo_otimizador.png",
+      "image": "./assets/Otimizador_contabil.png",
       "resizeMode": "contain",
       "backgroundColor": "#fefefe"
     },

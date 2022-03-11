@@ -2,14 +2,24 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Button,
     TextInput,
+    Alert,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FlatList } from 'react-native';
 import styles from './styles'
+import ModalControle from '../../components/Controle/Modal';
+import { useState } from 'react';
 
 export default function Controle({ navigation }) {
+    
+    const [visibleModal, setVisibleModal] = useState(false)
+    const [itemSelected, setItemSelected] = useState({})
+
+    function updateModal(item, value) {
+        setVisibleModal(value)
+        setItemSelected(item)
+    }
 
     const DATA = [
         {
@@ -73,9 +83,9 @@ export default function Controle({ navigation }) {
             status: 1,
         },
     ];
-
+    
     const renderItem = ({ item }) => (
-        <TouchableOpacity style={item.status == 1 ? styles.item : styles.itemError}>
+        <TouchableOpacity style={item.status == 1 ? styles.item : styles.itemError} onPress={ () => updateModal(item, true)}>
             <View style={styles.row} >
                 <View style={styles.itemCodigo} >
                     <Text style={styles.textItemCodigo}>{item.id}</Text>
@@ -110,6 +120,7 @@ export default function Controle({ navigation }) {
                     keyExtractor={item => item.id}
                 />
             </View>
+            <ModalControle setModal={setVisibleModal} visibleModal={visibleModal} dados={itemSelected}></ModalControle>
         </View>
         // </SafeAreaView>
     )

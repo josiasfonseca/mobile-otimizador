@@ -1,39 +1,85 @@
 import React, { useState } from "react";
 import { Alert, Modal, Text, Pressable, View } from "react-native";
+import styles from './styles'
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
+const ModalControle = ({ setModal, visibleModal, dados }) => {
 
-export default function Modal() {
-  const [modalVisible, setModalVisible] = useState(false);
-  return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
+    const [itemSelected, setItemSelected] = useState([])
+    const status = [
+        {
+            name: "Opções",
+            id: 0,
+            children: [
+                { id: 1, name: 'OK' }, { id: 2, name: 'ERRO' }
+            ]
+        }
+    ]
+
+    onSelectedItemsChange = (selectedItem) => {
+        console.log(selectedItem)
+        setItemSelected(selectedItem)
+    };
+
+    function onCancel() {
+        setModal(false)
+    }
+
+    function onConfirm() {
+        if (itemSelected.length == 0)
+            Alert.alert("Selecione uma opção!")
+        else
+            setModal(false)
+        console.log(itemSelected)
+    }
+
+    return (
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={visibleModal}
+                onRequestClose={() => setModal(!visibleModal)}
             >
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
-          </View>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{dados["id"]} - Mês: {dados["mes"]}</Text>
+                        <View style={styles.viewSelect}>
+                            <SectionedMultiSelect
+                                items={status}
+                                IconRenderer={Icon}
+                                uniqueKey="id"
+                                subKey="children"
+                                selectText="Escolha o status..."
+                                showDropDowns={true}
+                                readOnlyHeadings={true}
+                                onSelectedItemsChange={e => onSelectedItemsChange(e)}
+                                selectedItems={itemSelected}
+                                showCancelButton
+                                single
+                                searchPlaceholderText="Status"
+                                confirmText="Confirmar"
+                                selectText="Selecionar"
+                            />
+                        </View>
+                        <View style={styles.viewButtons}>
+                            <View style={styles.viewCancelar}>
+                                <Pressable onPress={() => onCancel()}>
+                                    <Text>Cancelar</Text>
+                                </Pressable>
+                            </View>
+                            <View style={styles.viewConfirmar}>
+                                <Pressable onPress={() => onConfirm()}>
+                                    <Text>Salvar</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
-      </Modal>
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable>
-    </View>
-  );
+    );
 };
 
+export default ModalControle

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {
   View,
@@ -19,74 +19,74 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState(null)
   const [error, setError] = useState(null)
   const [token, setToken] = useState(null)
+  const [url] = useState('https://api-otimizador.herokuapp.com/api/')
+  const [urlAuth, setUrlAuth] = useState('')
   // const [authUser, setAuthUser] = useState(null)
 
+  // useEffect(() => {
+
   async function auth() {
-    // if (user == null || password == null) {
-    //   Alert.alert('Informe o usuário e a senha!')
-    //   return
-    // }
+    setUrlAuth(url + 'auth/login')
+    if (user == null || password == null) {
+      Alert.alert('Informe o usuário e a senha!')
+      return
+    }
     const storeData = async (value) => {
       try {
         await AsyncStorage.setItem(
           'TOKEN',
-          JSON.stringify({ user: 'josias', password: '123456' })
+          JSON.stringify({ user: user, password: password })
         )
       } catch (e) {
-        // saving error
+        console.log(e)
       }
     }
+
     await storeData()
+    console.log('asdf')
     const getToken = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('TOKEN')
         return jsonValue != null ? JSON.parse(jsonValue) : null
       } catch (e) {
-        console.log(e, 'sd')
+        Alert.alert('Error Storage!')
       }
     }
-    console.log(await getToken())
-    if (await getToken) {
-      // Alert.alert('Login realizado!')
+    if (await getToken()) {
       navigation.reset({
         index: 0,
         routes: [{ name: 'Home' }],
       })
-      // navigation.dispatch(
-      //   CommonActions.reset({
-      //     index: 0,
-      //     routes: [{ name: 'Main' }],
-      //   })
-      // )
     }
-    // navigation.dispatch(
-    //   CommonActions.reset({
-    //     index: 0,
-    //     routes: [{ name: 'Main' }],
-    //   })
-    // )
-    // let response = await fetch(
-    //   'http://localhost:8000/api/auth/login?NOME=' +
-    //     user +
-    //     '&password=' +
-    //     password,
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/json',
-    //     },
-    //   }
-    // )
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     setToken(res.access_token)
-    //     Alert.alert('Logado')
-    //     navigation.navigate('Main')
-    //   })
-    //   .catch((err) => Alert.alert(JSON.stringify(err)))
+    await fetch(
+      urlAuth + '?login=' +
+      user +
+      '&password=' +
+      password,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+      .then(async (res) => await res.json())
+      .then(async (res) => {
+        // console.log(res)
+        if (res.access_token) {
+          await setToken(res.access_token)
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          })
+        } else {
+          Alert.alert('Falha de autenticação!')
+        }
+      })
+      .catch(() => Alert.alert('Erro de conexão!'))
   }
-
+  // });
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
