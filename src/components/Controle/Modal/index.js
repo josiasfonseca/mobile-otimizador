@@ -18,7 +18,6 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
     ]
 
     onSelectedItemsChange = (selectedItem) => {
-        console.log(selectedItem)
         setItemSelected(selectedItem)
     };
 
@@ -31,7 +30,6 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
             Alert.alert("Selecione uma opção!")
         else
             setModal(false)
-        console.log(itemSelected)
     }
 
     return (
@@ -60,7 +58,6 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
                                 single
                                 searchPlaceholderText="Status"
                                 confirmText="Confirmar"
-                                selectText="Selecionar"
                             />
                         </View>
                         <View style={styles.viewButtons}>

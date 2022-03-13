@@ -13,8 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function Importador({ navigation }) {
 
     function teste() {
-        console.log("asf")
-        Alert.alert("TESTe TESTE TE TES")
+        Alert.alert("Carregar arquivo")
     }
     const [fileClienteCliente, setFileClienteCliente] = useState(null);
     const [fileClienteContabilidade, setFileClienteContabilidade] = useState(null);

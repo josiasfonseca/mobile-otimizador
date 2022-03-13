@@ -1,4 +1,5 @@
 import { StatusBar, StyleSheet } from 'react-native'
+import { color } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes'
 
 const styles = StyleSheet.create({
   container: {
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
     height: 70,
     alignItems: 'center',
     backgroundColor: '#13B58C'
-  },  
+  },
   header: {
     marginTop: 20,
     fontSize: 20,
@@ -20,37 +21,51 @@ const styles = StyleSheet.create({
   },
   viewFlatList: {
     width: '100%',
-    marginTop: 5
+    marginTop: 5,
+    padding: 5
   },
   buttonControle: {
-    alignItems: 'flex-end',
-    width: '30%',
+    alignItems: 'center',
+    backgroundColor: '#13B58C',
+    marginLeft: 55,
+    width: '20%',
+    fontStyle: 'italic',
     justifyContent: 'center',
+    fontSize: 30,
+    height: 35,
+    borderRadius: 15
   },
   buttonImportador: {
-    alignItems: 'flex-end',
-    width: '30%',
-    // backgroundColor: 'red'
+    alignItems: 'center',
+    backgroundColor: '#5F9EA0',
+    marginLeft: 10,
+    width: '25%',
+    fontStyle: 'italic',
     justifyContent: 'center',
-  },  
+    fontSize: 30,
+    height: 35,
+    borderRadius: 15
+  },
   item: {
-    backgroundColor: '#ccc',
-    padding: 8,
-    marginVertical: 5,
+    backgroundColor: '#A9A9A9',
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: 45,
+    justifyContent: 'center',
+    marginVertical: 2,
+    borderRadius: 15
   },
   row: {
     flexDirection: "row",
     flexWrap: "wrap",
   },
   itemNome: {
-    // color: '#000',
     width: '32%',
     justifyContent: 'center',
   },
   textItemNome: {
     color: '#0e0e0e',
-    marginRight: 30,
-    textAlign: 'right',
+    marginLeft: 2,
     width: '100%'
   },
   itemCodigo: {
@@ -62,6 +77,7 @@ const styles = StyleSheet.create({
   textItemCodigo: {
     color: '#0e0e0e',
     textAlign: 'left',
+    marginLeft: 1
   },
   itemEmail: {
     alignItems: 'flex-end',

@@ -1,14 +1,18 @@
+import React, { useEffect } from 'react'
 import {
     View,
     Text,
     TouchableOpacity,
     Button,
+    BackHandler,
+    Alert
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { FlatList } from 'react-native';
 import styles from './styles'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faFileImport, faListCheck } from '@fortawesome/free-solid-svg-icons';
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
 
     const DATA = [
         {
@@ -91,11 +95,38 @@ export default function Home({ navigation }) {
                 <View style={styles.itemNome}>
                     <Text style={styles.textItemNome}>{item.empresa}</Text>
                 </View>
+                {/* <View style={styles.buttonControle}>
+                    <Button title='Controle' color="#A52A2A" style={styles.inputButton} onPress={() => navigation.navigate('Controle')}>
+                        <Text>DDD</Text>
+                    </Button>
+                </View> */}
                 <View style={styles.buttonControle}>
-                    <Button title='Controle' color="#7d807e" style={styles.inputButton} onPress={() => navigation.navigate('Controle')}></Button>
+                    <TouchableOpacity
+                        style={styles.inputButtonControle}
+                        onPress={() => navigation.navigate('Controle')}
+                    >
+                        <View >
+                            <Text style={{ color: '#fefefe' }}>
+                                <FontAwesomeIcon icon={faListCheck} size={12} style={{ color: '#fefefe' }}/>
+                                    {'  '}
+                                    Controle
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.buttonImportador}>
-                    <Button title='Importador' color="#7a7a75" style={styles.inputButton} onPress={() => navigation.navigate('Importador')}></Button>
+                    <TouchableOpacity
+                        style={styles.inputButtonImportador}
+                        onPress={() => navigation.navigate('Importador')}
+                    >
+                        <View >
+                            <Text style={{ color: '#fefefe' }}>
+                                <FontAwesomeIcon icon={faFileImport} size={14} style={{ color: '#fefefe' }}/>
+                                    {'  '}
+                                    Importador
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </TouchableOpacity>

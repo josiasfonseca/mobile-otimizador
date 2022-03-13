@@ -3,64 +3,73 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   Alert,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  ToastAndroid
+  ToastAndroid,
+  BackHandler
 } from 'react-native'
-import { TextInput } from 'react-native'
-import styles from './styles'
 import { faArrowRightToFile } from '@fortawesome/free-solid-svg-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export default function Login({ navigation }) {
+import styles from './styles'
+
+export default function Login({ navigation, route }) {
 
   const [user, setUser] = useState(null)
   const [password, setPassword] = useState(null)
   const [error, setError] = useState(null)
   const [token, setToken] = useState(null)
-  const [url] = useState('https://api-otimizador.herokuapp.com/api/')
-  const [urlAuth, setUrlAuth] = useState('')
+  const [userData, setUserData] = useState(null)
+  const [urlAuth] = useState('https://api-otimizador.herokuapp.com/api/auth/login')
 
-  const showToast = (message) => {
-    console.log(message)
+  useEffect(async () => {
+    await getToken()
+  }, []);
+
+
+  function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.LONG);
   };
 
+  async function storeData(){
+    try {
+      await AsyncStorage.setItem(
+        'TOKEN',
+        JSON.stringify({ token: token, user: userData })
+      )
+    } catch (e) {
+      showToast(JSON.stringify(e))
+    }
+  }
+  
+  async function getToken() {
+    try {
+      const jsonValue = await AsyncStorage.getItem('TOKEN')
+      const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
+      if (retorno && retorno.token && retorno.user) {
+        setUserData(retorno.user)
+        setToken(retorno.token)
+        showToast('REDIRIRECIONAR')
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        })
+      }
+    } catch (e) {
+      showToast(JSON.stringify(e))
+    }
+  }
+  // await getToken()
 
   async function auth() {
-    setUrlAuth(url + 'auth/login')
+
     if (user == null || password == null) {
       Alert.alert('Informe o usuário e a senha!')
       return
-    }
-    const storeData = async (value) => {
-      try {
-        await AsyncStorage.setItem(
-          'TOKEN',
-          JSON.stringify({ user: user, password: password })
-        )
-      } catch (e) {
-        showToast(JSON.stringify(e))
-      }
-    }
-
-    await storeData()
-    const getToken = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('TOKEN')
-        return jsonValue != null ? JSON.parse(jsonValue) : null
-      } catch (e) {
-        showToast('Error Storage!')
-      }
-    }
-    if (await getToken()) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      })
     }
     await fetch(
       urlAuth + '?login=' +
@@ -76,13 +85,15 @@ export default function Login({ navigation }) {
       }
     )
       .then(res => {
-        console.log(res)
         return res.json()
       })
-      .then((res) => {
-        console.log(res)
+      .then(async (res) => {
         if (res.access_token) {
           setToken(res.access_token)
+          setUserData(res.user)
+          
+          await storeData()
+          
           showToast('Logado com sucesso!')
           navigation.reset({
             index: 0,
@@ -92,7 +103,11 @@ export default function Login({ navigation }) {
           showToast('Falha de autenticação!')
         }
       })
-      .catch(() => showToast('Erro de conexão!'))
+      .catch((err) => {
+        if (!getToken)
+          showToast('Erro de conexão!')
+        showToast('Failed connection! Try again!')
+      })
   }
   // });
   return (
