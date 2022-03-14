@@ -68,16 +68,16 @@ export function DrawerComponent(props) {
             label: 'Home',
             route: 'Home'
         },
-        // {
-        //     nameIcon: 'account',
-        //     label: 'Usuarios',
-        //     route: 'Usuarios'
-        // },
-        // {
-        //     nameIcon: 'store',
-        //     label: 'Empresas',
-        //     route: 'Empresas'
-        // },
+        {
+            nameIcon: 'account',
+            label: 'Usuarios',
+            route: 'Usuario'
+        },
+        {
+            nameIcon: 'store',
+            label: 'Empresas',
+            route: 'Empresa'
+        },
     ]
     const elements = []
     for (let i = 0; i < drawerItens.length; i++) {
