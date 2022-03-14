@@ -15,25 +15,23 @@ const styles = StyleSheet.create({
   },  
   viewReferencia: {
     flexDirection: 'row',
-    width: '100%'
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+
   },  
   textReferencia: {
     color: '#000',
     textAlign: 'left'
   },
-  inputAnoReferencia: {
-    backgroundColor: '#13B58C',
-    letterSpacing: 2,
-    width: 70,
-    textAlign: 'center',
-    color: '#fff',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  header: {
-    marginTop: 20,
-    fontSize: 20,
-    color: '#fff',
+  viewSelect: {
+    backgroundColor: "#13B58C",
+    borderRadius: 8,
+    width: 100,
+    height: 65,
+    padding: 2,
+    // elevation: 2,
+    // backgroundColor: 'red'
   },
   viewFlatList: {
     width: '100%',
@@ -56,7 +54,8 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   itemError: {
-    backgroundColor: '#98979a',
+    // backgroundColor: '#98979a',
+    backgroundColor: '#FA8072',
     padding: 8,
     marginVertical: 5,
   },

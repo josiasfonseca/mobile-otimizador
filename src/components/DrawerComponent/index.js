@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ToastAndroid } from 'react-native';
+import { View, ToastAndroid } from 'react-native';
 import {
     useTheme,
     Avatar,
@@ -19,13 +19,19 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as RootNavigation from '../../..//RootNavigation.js';
+import styles from './styles'
 // import{ AuthContext } from '../components/context';
 
-export function DrawerComponent(props, { navigation }) {
+export function DrawerComponent(props) {
+
+    useEffect(async () => {
+        await getDadosToken()
+    }, []);
 
     // const paperTheme = useTheme();
     // const { signOut, toggleTheme } = React.useContext(AuthContext);
+
     const [userData, setUserData] = useState(null)
     const [token, setToken] = useState(null)
 
@@ -35,30 +41,26 @@ export function DrawerComponent(props, { navigation }) {
 
     const logout = async () => {
         AsyncStorage.removeItem('TOKEN')
-        Alert.alert("Logout realizado")
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-        })
+        showToast("Logout realizado")
+       props.navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      })
     }
 
-    useEffect(async () => {
+    async function getDadosToken() {
+
         try {
             const jsonValue = await AsyncStorage.getItem('TOKEN')
             const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
             if (retorno && retorno.token && retorno.user) {
                 setUserData(retorno.user)
                 setToken(retorno.token)
-                showToast('REDIRIRECIONAR DRAWER D')
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Login' }],
-                })
             }
         } catch (e) {
             showToast('Realizar Login')
         }
-    }, []);
+    }
 
     const drawerItens = [
         {
@@ -106,9 +108,9 @@ export function DrawerComponent(props, { navigation }) {
                                 source={require('../../../assets/account.png')}
                                 size={50}
                             />
-                            <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                                <Title style={styles.title}>John Doe</Title>
-                                <Caption style={styles.caption}>@j_doe</Caption>
+                            <View style={{ marginLeft: 10, flexDirection: 'column' }}>
+                                <Title style={styles.title}>{userData && userData.login ? userData.login : 'Login '}</Title>
+                                <Caption style={styles.caption}>{userData && userData.email ? userData.email : 'email '}</Caption>
                             </View>
                         </View>
 
@@ -137,49 +139,3 @@ export function DrawerComponent(props, { navigation }) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    drawerContent: {
-        flex: 1,
-    },
-    userInfoSection: {
-        paddingLeft: 20,
-    },
-    title: {
-        fontSize: 16,
-        marginTop: 3,
-        fontWeight: 'bold',
-    },
-    caption: {
-        fontSize: 14,
-        lineHeight: 14,
-    },
-    row: {
-        marginTop: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    section: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginRight: 15,
-    },
-    paragraph: {
-        fontWeight: 'bold',
-        marginRight: 3,
-    },
-    drawerSection: {
-        marginTop: 15,
-    },
-    bottomDrawerSection: {
-        marginBottom: 15,
-        borderTopColor: '#13B58C',
-        borderTopWidth: 1
-    },
-    preference: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-    },
-});

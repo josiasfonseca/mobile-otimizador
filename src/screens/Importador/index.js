@@ -51,56 +51,52 @@ export default function Importador({ navigation }) {
     // }
     return (
         // <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
-            // <View style={{ width: '100%' }}>
-                <View style={styles.container}>
-                    
-                    {/* <View style={styles.viewHeader}>
-                        <Text style={styles.header}>Importador</Text>
-                    </View> */}
-                    <View style={styles.viewImportCliente}>
-                        {/* <View style={styles.viewTitleImportadorCliente}>
-                            <Text style={styles.titleImportadorCliente}>Importar arquivos Clientes</Text>
-                        </View> */}
-                        <View style={styles.importCliente} >
-                            <View style={styles.viewImports}>
-                                <View style={styles.fileCliente}>
-                                    <Text>Arquivo cliente</Text>
-                                    <Button
-                                        title='importar'
-                                        onPress={teste}
-                                        color='#13B58C'
-                                        style={styles.inputButonImportCliente} />
-                                </View>
+        // <View style={{ width: '100%' }}>
+        <View style={styles.container}>
+            <View style={styles.viewImportCliente}>
+                <View style={styles.viewTitleImportadorCliente}>
+                    <Text style={styles.titleImportadorCliente}>Importar arquivos Clientes</Text>
+                </View>
+                <View style={styles.importCliente} >
+                    <View style={styles.viewImports}>
+                        <View style={styles.fileCliente}>
+                            <Text>Arquivo cliente</Text>
+                            <Button
+                                title='importar'
+                                onPress={teste}
+                                color='#13B58C'
+                                style={styles.inputButonImportCliente} />
+                        </View>
 
-                                <View style={styles.fileContabilidade}>
-                                    <Text>Arquivo Contabilidade</Text>
-                                    <Button title='importar' color='#13B58C' style={styles.inputButonImportCliente}> </Button>
-                                </View>
-                            </View>
+                        <View style={styles.fileContabilidade}>
+                            <Text>Arquivo Contabilidade</Text>
+                            <Button title='importar' color='#13B58C' style={styles.inputButonImportCliente}> </Button>
                         </View>
-                        <View></View>
-                    </View>
-                    <View style={styles.viewImportFornecedor}>
-                        <View style={styles.viewTitleImportadorFornecedor}>
-                            <Text style={styles.titleImportadorFornecedor}>Importar arquivos Fornecedores</Text>
-                        </View>
-                        <View style={styles.importFornecedor}>
-                            <View style={styles.viewImports}>
-                                <View style={styles.fileFornecedor}>
-                                    <Text>Arquivo fornecedor</Text>
-                                    <Button title='importar' color='#13B58C' style={styles.inputButonImportFornecedor}> </Button>
-                                </View>
-
-                                <View style={styles.fileContabilidade}>
-                                    <Text>Arquivo Contabilidade</Text>
-                                    <Button title='importar' color='#13B58C' style={styles.inputButonImportFornecedor}> </Button>
-                                </View>
-                            </View>
-                        </View>
-                        <View></View>
                     </View>
                 </View>
-            // </View>
+                <View></View>
+            </View>
+            <View style={styles.viewImportFornecedor}>
+                <View style={styles.viewTitleImportadorFornecedor}>
+                    <Text style={styles.titleImportadorFornecedor}>Importar arquivos Fornecedores</Text>
+                </View>
+                <View style={styles.importFornecedor}>
+                    <View style={styles.viewImports}>
+                        <View style={styles.fileFornecedor}>
+                            <Text>Arquivo fornecedor</Text>
+                            <Button title='importar' color='#13B58C' style={styles.inputButonImportFornecedor}> </Button>
+                        </View>
+
+                        <View style={styles.fileContabilidade}>
+                            <Text>Arquivo Contabilidade</Text>
+                            <Button title='importar' color='#13B58C' style={styles.inputButonImportFornecedor}> </Button>
+                        </View>
+                    </View>
+                </View>
+                <View></View>
+            </View>
+        </View>
+        // </View>
         // </SafeAreaView>
     )
 }

@@ -37,10 +37,14 @@ export default function Login({ navigation, route }) {
 
   async function storeData(){
     try {
+      
       await AsyncStorage.setItem(
         'TOKEN',
         JSON.stringify({ token: token, user: userData })
       )
+      const jsonValue = await AsyncStorage.getItem('TOKEN')
+
+            const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
     } catch (e) {
       showToast(JSON.stringify(e))
     }
@@ -53,7 +57,6 @@ export default function Login({ navigation, route }) {
       if (retorno && retorno.token && retorno.user) {
         setUserData(retorno.user)
         setToken(retorno.token)
-        showToast('REDIRIRECIONAR')
         navigation.reset({
           index: 0,
           routes: [{ name: 'Home' }],
@@ -174,7 +177,7 @@ export default function Login({ navigation, route }) {
           </View>
           <View style={styles.login}>
             <View>
-              <Text style={styles.messageResetSenha}>Esqueceu a senha</Text>
+              {/* <Text style={styles.messageResetSenha}>Esqueceu a senha</Text> */}
             </View>
           </View>
         </View>

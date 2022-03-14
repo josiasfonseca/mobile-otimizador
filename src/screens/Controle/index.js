@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     View,
     Text,
@@ -10,17 +11,27 @@ import { FlatList } from 'react-native';
 import styles from './styles'
 import ModalControle from '../../components/Controle/Modal';
 import { useState } from 'react';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 export default function Controle({ navigation }) {
-    
+
     const [visibleModal, setVisibleModal] = useState(false)
     const [itemSelected, setItemSelected] = useState({})
+    const [anoSelected, setAnoSelected] = useState([])
 
     function updateModal(item, value) {
         setVisibleModal(value)
         setItemSelected(item)
     }
 
+    const onSelectedAnoChange = (selectedItem) => {
+        setAnoSelected(selectedItem)
+    };
+
+    onSelectedItemsChange = (selectedItem) => {
+        setSelected(selectedItem)
+    };
     const DATA = [
         {
             id: '1',
@@ -83,9 +94,20 @@ export default function Controle({ navigation }) {
             status: 1,
         },
     ];
-    
+
+    const anos = [
+        {
+            name: "Opções",
+            id: 0,
+            children: [
+                { id: 1, name: '2010' }, { id: 2, name: '2011' }, { id: 3, name: '2012' }
+            ]
+        }
+    ]
+
+
     const renderItem = ({ item }) => (
-        <TouchableOpacity style={item.status == 1 ? styles.item : styles.itemError} onPress={ () => updateModal(item, true)}>
+        <TouchableOpacity style={item.status == 1 ? styles.item : styles.itemError} onPress={() => updateModal(item, true)}>
             <View style={styles.row} >
                 <View style={styles.itemCodigo} >
                     <Text style={styles.textItemCodigo}>{item.id}</Text>
@@ -104,13 +126,29 @@ export default function Controle({ navigation }) {
         //   <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
 
         <View style={styles.container}>
-            {/* <View style={styles.viewHeader}>
-                <Text style={styles.header}>Controles</Text>
-            </View> */}
-            <View >
+            <View style={{ width: '100%' }} >
                 <View style={styles.viewReferencia}>
-                    <Text style={styles.textReferencia}>Ano Referencia: </Text>
-                    <TextInput style={styles.inputAnoReferencia} placeholder='Ano' keyboardType='numeric' maxLength={4} length={15}/>
+                    <View style={{  padding: 15 }}>
+                        <Text style={styles.textReferencia}>Ano Referencia: </Text>
+                    </View>
+
+                    <View style={styles.viewSelect}>
+                        <SectionedMultiSelect
+                            items={anos}
+                            IconRenderer={Icon}
+                            uniqueKey="id"
+                            subKey="children"
+                            selectText="Escolha o status..."
+                            showDropDowns={true}
+                            readOnlyHeadings={true}
+                            onSelectedItemsChange={e => onSelectedAnoChange(e)}
+                            selectedItems={anoSelected}
+                            showCancelButton
+                            single
+                            searchPlaceholderText="Status"
+                            confirmText="Confirmar"
+                        />
+                    </View>
                 </View>
             </View>
             <View style={styles.viewFlatList}>
@@ -120,6 +158,7 @@ export default function Controle({ navigation }) {
                     keyExtractor={item => item.id}
                 />
             </View>
+
             <ModalControle setModal={setVisibleModal} visibleModal={visibleModal} dados={itemSelected}></ModalControle>
         </View>
         // </SafeAreaView>
