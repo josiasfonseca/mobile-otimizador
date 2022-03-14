@@ -25,9 +25,9 @@ import styles from './styles'
 
 export function DrawerComponent(props) {
 
-    useEffect(async () => {
-        await getDadosToken()
-    }, []);
+    useEffect(() => {
+    // getDadosToken()
+    });
 
     // const paperTheme = useTheme();
     // const { signOut, toggleTheme } = React.useContext(AuthContext);
@@ -53,6 +53,7 @@ export function DrawerComponent(props) {
         try {
             const jsonValue = await AsyncStorage.getItem('TOKEN')
             const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
+            
             if (retorno && retorno.token && retorno.user) {
                 setUserData(retorno.user)
                 setToken(retorno.token)

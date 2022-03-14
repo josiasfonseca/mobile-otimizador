@@ -27,7 +27,7 @@ export default function Login({ navigation, route }) {
   const [urlAuth] = useState('https://api-otimizador.herokuapp.com/api/auth/login')
 
   useEffect(async () => {
-    await getToken()
+    // await getToken()
   }, []);
 
 
@@ -35,21 +35,23 @@ export default function Login({ navigation, route }) {
     ToastAndroid.show(message, ToastAndroid.LONG);
   };
 
-  async function storeData(){
+  const storeData = async () => {
     try {
-      
+      console.log("LOGIN:", userData, token)
+
       await AsyncStorage.setItem(
         'TOKEN',
         JSON.stringify({ token: token, user: userData })
       )
       const jsonValue = await AsyncStorage.getItem('TOKEN')
 
-            const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
+      const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
+      return retorno
     } catch (e) {
       showToast(JSON.stringify(e))
     }
   }
-  
+
   async function getToken() {
     try {
       const jsonValue = await AsyncStorage.getItem('TOKEN')
@@ -57,60 +59,62 @@ export default function Login({ navigation, route }) {
       if (retorno && retorno.token && retorno.user) {
         setUserData(retorno.user)
         setToken(retorno.token)
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        })
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name: 'Home' }],
+        // })
       }
     } catch (e) {
       showToast(JSON.stringify(e))
     }
   }
-  // await getToken()
+  // getToken()
 
   async function auth() {
+    try {
 
-    if (user == null || password == null) {
-      Alert.alert('Informe o usuário e a senha!')
-      return
-    }
-    await fetch(
-      urlAuth + '?login=' +
-      user +
-      '&password=' +
-      password,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+      if (user == null || password == null) {
+        Alert.alert('Informe o usuário e a senha!')
+        return
       }
-    )
-      .then(res => {
-        return res.json()
-      })
-      .then(async (res) => {
-        if (res.access_token) {
-          setToken(res.access_token)
-          setUserData(res.user)
-          
-          await storeData()
-          
-          showToast('Logado com sucesso!')
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Home' }],
-          })
-        } else {
-          showToast('Falha de autenticação!')
+      console.log(urlAuth, user, password)
+      await fetch(
+        urlAuth + '?login=' +
+        user +
+        '&password=' +
+        password,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
         }
-      })
-      .catch((err) => {
-        if (!getToken)
-          showToast('Erro de conexão!')
-        showToast('Failed connection! Try again!')
-      })
+      )
+        .then(async (resp) => await resp.json())
+        .then(async (json) => {
+          if (json) {
+            console.log(json.access_token)
+            if (json.access_token) {
+              setToken(json.access_token)
+              setUserData(json.user)
+              
+              console.log(userData)
+              await storeData()
+
+              showToast('Logado com sucesso!')
+              // navigation.reset({
+              //   index: 0,
+              //   routes: [{ name: 'Home' }],
+              // })
+            } else {
+              showToast('Falha de autenticação!')
+            }
+          }
+        })
+    } catch (e) {
+      console.log(e)
+    }
   }
   // });
   return (

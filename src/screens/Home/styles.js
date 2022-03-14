@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontSize: 30,
     height: 35,
-    borderRadius: 15
+    borderRadius: 5
   },
   buttonImportador: {
     alignItems: 'center',
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontSize: 30,
     height: 35,
-    borderRadius: 15
+    borderRadius: 5
   },
   item: {
     backgroundColor: '#A9A9A9',
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     height: 45,
     justifyContent: 'center',
     marginVertical: 2,
-    borderRadius: 15
+    borderRadius: 5
   },
   row: {
     flexDirection: "row",
