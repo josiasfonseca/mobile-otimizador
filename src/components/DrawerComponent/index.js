@@ -26,7 +26,7 @@ import styles from './styles'
 export function DrawerComponent(props) {
 
     useEffect(() => {
-    // getDadosToken()
+        getDadosToken()
     });
 
     // const paperTheme = useTheme();
@@ -42,10 +42,10 @@ export function DrawerComponent(props) {
     const logout = async () => {
         AsyncStorage.removeItem('TOKEN')
         showToast("Logout realizado")
-       props.navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      })
+        props.navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+        })
     }
 
     async function getDadosToken() {
@@ -53,7 +53,7 @@ export function DrawerComponent(props) {
         try {
             const jsonValue = await AsyncStorage.getItem('TOKEN')
             const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
-            
+
             if (retorno && retorno.token && retorno.user) {
                 setUserData(retorno.user)
                 setToken(retorno.token)
@@ -95,7 +95,15 @@ export function DrawerComponent(props) {
                     />
                 )}
                 label={item.label}
-                onPress={() => { props.navigation.navigate(item.route) }}
+                onPress={() => {
+                    props.navigation.reset(
+                        {
+                            index: 0,
+                            routes: [{ name: item.route }],
+                        }
+                    )
+                }
+                }
             />
         )
     }

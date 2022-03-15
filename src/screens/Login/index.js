@@ -25,7 +25,7 @@ export default function Login({ navigation, route }) {
   const [token, setToken] = useState(null)
   const [userData, setUserData] = useState(null)
   const [urlAuth] = useState('https://api-otimizador.herokuapp.com/api/auth/login')
-
+  let realizandoLogin = false
   useEffect(async () => {
     // await getToken()
   }, []);
@@ -35,13 +35,11 @@ export default function Login({ navigation, route }) {
     ToastAndroid.show(message, ToastAndroid.LONG);
   };
 
-  const storeData = async () => {
+  const storeData = async (json) => {
     try {
-      console.log("LOGIN:", userData, token)
-
       await AsyncStorage.setItem(
         'TOKEN',
-        JSON.stringify({ token: token, user: userData })
+        JSON.stringify({ token: json.access_token, user: json.user })
       )
       const jsonValue = await AsyncStorage.getItem('TOKEN')
 
@@ -59,10 +57,10 @@ export default function Login({ navigation, route }) {
       if (retorno && retorno.token && retorno.user) {
         setUserData(retorno.user)
         setToken(retorno.token)
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [{ name: 'Home' }],
-        // })
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        })
       }
     } catch (e) {
       showToast(JSON.stringify(e))
@@ -71,13 +69,17 @@ export default function Login({ navigation, route }) {
   // getToken()
 
   async function auth() {
+    if(realizandoLogin) {
+      showToast('Realizando login. Aguarde!')
+      return
+    }
+    realizandoLogin = true
     try {
 
       if (user == null || password == null) {
         Alert.alert('Informe o usuário e a senha!')
         return
       }
-      console.log(urlAuth, user, password)
       await fetch(
         urlAuth + '?login=' +
         user +
@@ -94,19 +96,17 @@ export default function Login({ navigation, route }) {
         .then(async (resp) => await resp.json())
         .then(async (json) => {
           if (json) {
-            console.log(json.access_token)
             if (json.access_token) {
               setToken(json.access_token)
               setUserData(json.user)
               
-              console.log(userData)
-              await storeData()
+              await storeData(json)
 
               showToast('Logado com sucesso!')
-              // navigation.reset({
-              //   index: 0,
-              //   routes: [{ name: 'Home' }],
-              // })
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+              })
             } else {
               showToast('Falha de autenticação!')
             }

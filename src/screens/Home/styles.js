@@ -1,5 +1,4 @@
 import { StatusBar, StyleSheet } from 'react-native'
-import { color } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes'
 
 const styles = StyleSheet.create({
   container: {

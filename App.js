@@ -7,10 +7,12 @@ import Login from './src/screens/Login'
 import Home from './src/screens/Home'
 import Importador from './src/screens/Importador'
 import Usuario from './src/screens/Usuario'
+import UsuarioEdit from './src/screens/Usuario/UsuarioEdit'
 import Empresa from './src/screens/Empresa'
 import { NavigationContainer } from '@react-navigation/native'
 // import { navigationRef } from './RootNavigation';
 import { DrawerComponent } from './src/components/DrawerComponent';
+import { StatusBar } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 
@@ -22,18 +24,17 @@ export default function App() {
     headerStyle: { backgroundColor: '#13B58C', height: 90 },
     headerTitleStyle: { color: '#fff', fontSize: 20 },
     backBehavior: 'history',
-    drawerHideStatusBarOnOpen: true,
+    drawerHideStatusBarOnOpen: false,
     drawerStatusBarAnimation: 'fade'
   }
   return (
     <NavigationContainer >
       <Drawer.Navigator
         drawerContent={props => <DrawerComponent {...props} />}
-        initialRouteName="Login"
+        initialRouteName="Usuario"
         screenOptions={screensOptions}
         backBehavior='history'
       >
-
           <Drawer.Screen
             name="Login"
             component={Login}
@@ -42,6 +43,7 @@ export default function App() {
           <Drawer.Screen name="Controle" component={Controle} />
           <Drawer.Screen name="Importador" component={Importador} />
           <Drawer.Screen name="Usuario" component={Usuario} />
+          <Drawer.Screen name="UsuarioEdit" component={UsuarioEdit} options={{ title: 'Edição de Usuário' }} />
           <Drawer.Screen name="Empresa" component={Empresa} />
       </Drawer.Navigator>
     </NavigationContainer>

@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
   viewCancelar: {
     marginRight: 50,
-    backgroundColor: '#ff4c4c',
+    backgroundColor: '#FF6347',
     height: 35,
     width: 100,
     alignItems: 'center',

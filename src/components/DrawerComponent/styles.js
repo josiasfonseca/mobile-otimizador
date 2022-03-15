@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     drawerContent: {
         flex: 1,
+        marginTop: 0
     },
     userInfoSection: {
         paddingLeft: 20,
