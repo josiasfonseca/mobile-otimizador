@@ -141,7 +141,7 @@ export function DrawerComponent(props) {
                             size={size}
                         />
                     )}
-                    label="Sign Out"
+                    label="Sair"
                     onPress={() => { logout() }}
                 />
             </Drawer.Section>

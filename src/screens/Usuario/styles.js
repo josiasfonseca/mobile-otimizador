@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         flex:1.1,
         flexDirection: 'row',
-        // backgroundColor: 'blue'
       },  
 });
 

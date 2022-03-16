@@ -9,8 +9,8 @@ import Importador from './src/screens/Importador'
 import Usuario from './src/screens/Usuario'
 import UsuarioEdit from './src/screens/Usuario/UsuarioEdit'
 import Empresa from './src/screens/Empresa'
+import EmpresaEdit from './src/screens/Empresa/EmpresaEdit'
 import { NavigationContainer } from '@react-navigation/native'
-// import { navigationRef } from './RootNavigation';
 import { DrawerComponent } from './src/components/DrawerComponent';
 import { StatusBar } from 'react-native';
 
@@ -31,7 +31,7 @@ export default function App() {
     <NavigationContainer >
       <Drawer.Navigator
         drawerContent={props => <DrawerComponent {...props} />}
-        initialRouteName="Usuario"
+        initialRouteName="Home"
         screenOptions={screensOptions}
         backBehavior='history'
       >
@@ -45,6 +45,7 @@ export default function App() {
           <Drawer.Screen name="Usuario" component={Usuario} />
           <Drawer.Screen name="UsuarioEdit" component={UsuarioEdit} options={{ title: 'Edição de Usuário' }} />
           <Drawer.Screen name="Empresa" component={Empresa} />
+          <Drawer.Screen name="EmpresaEdit" component={EmpresaEdit} options={{ title: 'Edição de Empresa' }} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

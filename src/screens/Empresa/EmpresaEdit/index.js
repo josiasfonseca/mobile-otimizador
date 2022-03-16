@@ -56,10 +56,6 @@ export default function Usuario({ navigation }) {
   }
 
   return (
-    // <KeyboardAvoidingView
-    //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    //   onPress={Keyboard.dismiss}
-    // >
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView>
         <View style={styles.container}>
@@ -251,6 +247,5 @@ export default function Usuario({ navigation }) {
         </View>
       </ScrollView>
     </TouchableWithoutFeedback>
-    // </KeyboardAvoidingView>
   )
 }

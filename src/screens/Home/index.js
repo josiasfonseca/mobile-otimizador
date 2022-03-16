@@ -1,152 +1,156 @@
 import React, { useEffect } from 'react'
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Button,
-    BackHandler,
-    Alert
-} from 'react-native'
-import { FlatList } from 'react-native';
+import { Button, DataTable } from 'react-native-paper';
+
+import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faFileImport, faListCheck } from '@fortawesome/free-solid-svg-icons';
 
-export default function Home({ navigation, route }) {
+export default function Home({ navigation }) {
 
-    const DATA = [
+    function showToast(message) {
+        ToastAndroid.show(message, ToastAndroid.LONG);
+    };
+
+    const optionsPerPage = [2, 3, 4];
+
+    const [page, setPage] = React.useState(0);
+    const [itemsPerPage, setItemsPerPage] = React.useState(optionsPerPage[0]);
+
+    useEffect(() => {
+        setPage(0);
+    }, [itemsPerPage]);
+
+    const companies = [
         {
             id: '1',
             email: 'joao@ifpr.edu.br',
-            empresa: 'Empresa 1',
+            nome: 'Empresa Teste a 1',
         },
         {
             id: '2',
             email: 'maria@ifpr.edu.br',
-            empresa: 'Empresa 2',
+            nome: 'Empresa Teste a 2',
         },
         {
             id: '3',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '4',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '5',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '6',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '7',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '8',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '9',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '10',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '11',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '12',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
         {
             id: '13',
             email: 'joana@ifpr.edu.br',
-            empresa: 'Empresa 3',
+            nome: 'Empresa Teste a 3',
         },
 
     ];
 
-    const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.item}>
-            <View style={styles.row} >
-                {/* <View style={styles.itemEmail}>
-                    <Text style={styles.textItemEmail}>{item.email}</Text>
-                </View> */}
-                <View style={styles.itemCodigo} >
-                    <Text style={styles.textItemCodigo}>{item.id}</Text>
-                </View>
-                <View style={styles.itemNome}>
-                    <Text style={styles.textItemNome}>{item.empresa}</Text>
-                </View>
-                {/* <View style={styles.buttonControle}>
-                    <Button title='Controle' color="#A52A2A" style={styles.inputButton} onPress={() => navigation.navigate('Controle')}>
-                        <Text>DDD</Text>
-                    </Button>
-                </View> */}
-                <View style={styles.buttonControle}>
-                    <TouchableOpacity
-                        style={styles.inputButtonControle}
-                        onPress={() => navigation.navigate('Controle')}
-                    >
-                        <View >
-                            <Text style={{ color: '#fefefe' }}>
-                                <FontAwesomeIcon icon={faListCheck} size={12} style={{ color: '#fefefe' }}/>
-                                    {'  '}
-                                    Controle
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.buttonImportador}>
-                    <TouchableOpacity
-                        style={styles.inputButtonImportador}
-                        onPress={() => navigation.navigate('Importador')}
-                    >
-                        <View >
-                            <Text style={{ color: '#fefefe' }}>
-                                <FontAwesomeIcon icon={faFileImport} size={14} style={{ color: '#fefefe' }}/>
-                                    {'  '}
-                                    Importador
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </TouchableOpacity>
-    );
+    const elements = []
+    for (let i = 0; i < companies.length; i++) {
+        elements.push(companies[i])
+    }
+
+    function renderDataItem(item, index) {
+        return (
+            <DataTable.Row key={index}>
+                <DataTable.Cell numeric style={styles.cellId}>{item.id}</DataTable.Cell>
+                <DataTable.Cell style={styles.cellNome}>{item.nome}</DataTable.Cell>
+                <DataTable.Cell style={styles.cellAcao}>
+                    <View>
+                        <Button
+                            mode="text"
+                            compact={true}
+                            uppercase={false}
+                            icon="playlist-check"
+                            labelStyle={{ fontSize: 30 }}
+                            color="blue"
+                            onPress={() => navigation.navigate('Controle')} >
+                        </Button>
+                    </View>
+                    <View>
+                        <Button
+                            mode="text"
+                            compact={true}
+                            uppercase={false}
+                            icon="database-import"
+                            labelStyle={{ fontSize: 30 }}
+                            color="red"
+                            onPress={() => navigation.navigate('Importador')} >
+                        </Button>
+                    </View>
+                </DataTable.Cell>
+            </DataTable.Row>
+        )
+    }
 
     return (
-        //   <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
-
         <View style={styles.container}>
-            {/* <View style={styles.viewHeader}>
-                <Text style={styles.header}>Home</Text>
-            </View> */}
-            <View style={styles.viewFlatList}>
-                <FlatList
-                    data={DATA}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.id}
+            <DataTable>
+                <DataTable.Header>
+                    <DataTable.Title numeric style={styles.titleId}>ID</DataTable.Title>
+                    <DataTable.Title style={styles.titleNome}>Nome</DataTable.Title>
+                    <DataTable.Title style={styles.titleAcao}>Ação</DataTable.Title>
+                </DataTable.Header>
+
+                <View>
+                    {elements.map((item, index) => renderDataItem(item, index))}
+                </View>
+
+                <DataTable.Pagination
+                    page={page}
+                    numberOfPages={3}
+                    onPageChange={(page) => setPage(page)}
+                    label="1-2 of 6"
+                    optionsPerPage={optionsPerPage}
+                    itemsPerPage={itemsPerPage}
+                    setItemsPerPage={setItemsPerPage}
+                    showFastPagination
+                    optionsLabel={'Rows per page'}
                 />
-            </View>
+            </DataTable>
         </View>
-        // </SafeAreaView>
     )
 }

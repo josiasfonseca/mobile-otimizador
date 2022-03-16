@@ -7,48 +7,69 @@ import {
     Alert,
 } from 'react-native'
 import styles from './styles'
-// import DocumentPicker from 'react-native-document-picker';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// Import Document Picker
+import * as DocumentPicker from 'expo-document-picker';
+import { ToastAndroid } from 'react-native';
 
 export default function Importador({ navigation }) {
 
-    function teste() {
-        Alert.alert("Carregar arquivo")
-    }
+    const [singleFile, setSingleFile] = useState(null);
     const [fileClienteCliente, setFileClienteCliente] = useState(null);
     const [fileClienteContabilidade, setFileClienteContabilidade] = useState(null);
 
-    // const selectFile = async () => {
-    //     Alert.alert('Teste')
-    //     // Opening Document Picker to select one file
-    //     try {
-    //         const res = await DocumentPicker.pick({
-    //             // Provide which type of file you want user to pick
-    //             type: [DocumentPicker.types.xls, DocumentPicker.types.xlsx],
-    //             // There can me more options as well
-    //             // DocumentPicker.types.allFiles
-    //             // DocumentPicker.types.images
-    //             // DocumentPicker.types.plainText
-    //             // DocumentPicker.types.audio
-    //             // DocumentPicker.types.pdf
-    //         });
-    //         // Printing the log realted to the file
-    //         console.log('res : ' + JSON.stringify(res));
-    //         // Setting the state to show single file attributes
-    //         setFileClienteCliente(res);
-    //     } catch (err) {
-    //         setFileClienteCliente(null);
-    //         // Handling any exception (If any)
-    //         if (DocumentPicker.isCancel(err)) {
-    //             // If user canceled the document selection
-    //             Alert.alert('Canceled');
-    //         } else {
-    //             // For Unknown Error
-    //             Alert.alert('Unknown Error: ' + JSON.stringify(err));
-    //             throw err;
-    //         }
-    //     }
-    // }
+    const uploadImage = async () => {
+        // Check if any file is selected or not
+        if (singleFile != null) {
+            // If file selected then create FormData
+            const fileToUpload = singleFile;
+            const data = new FormData();
+            data.append('name', 'Image Upload');
+            data.append('file_attachment', fileToUpload);
+            // Please change file upload URL
+            let res = await fetch(
+                'http://localhost/upload.php',
+                {
+                    method: 'post',
+                    body: data,
+                    headers: {
+                        'Content-Type': 'multipart/form-data; ',
+                    },
+                }
+            );
+            let responseJson = await res.json();
+            if (responseJson.status == 1) {
+                alert('Upload Successful');
+            }
+        } else {
+            // If no file selected the show alert
+            alert('Please Select File first');
+        }
+    };
+
+    async function selectFile() {
+        console.log('SELECT FILE')
+        // Opening Document Picker to select one file
+        try {
+
+            const res = await DocumentPicker.getDocumentAsync({});
+            // console.log('res : ' + JSON.stringify(res));
+            if (res && res.type == 'success')
+                setSingleFile(res);
+
+            Alert.alert('Arquivo carregado!\nNome: ' + res.name)
+        } catch (err) {
+            setSingleFile(null);
+            // Handling any exception (If any)
+            if (DocumentPicker.isCancel(err)) {
+                // If user canceled the document selection
+                alert('Canceled');
+            } else {
+                ToastAndroid.show('Unknown Error: ' + JSON.stringify(err));
+                throw err;
+            }
+        }
+    };
+
     return (
         // <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
         // <View style={{ width: '100%' }}>
@@ -63,14 +84,17 @@ export default function Importador({ navigation }) {
                             <Text>Arquivo cliente</Text>
                             <Button
                                 title='importar'
-                                onPress={teste}
+                                onPress={selectFile}
                                 color='#13B58C'
                                 style={styles.inputButonImportCliente} />
                         </View>
 
                         <View style={styles.fileContabilidade}>
                             <Text>Arquivo Contabilidade</Text>
-                            <Button title='importar' color='#13B58C' style={styles.inputButonImportCliente}> </Button>
+                            <Button
+                                title='importar'
+                                color='#13B58C'
+                                style={styles.inputButonImportCliente} />
                         </View>
                     </View>
                 </View>
@@ -93,7 +117,6 @@ export default function Importador({ navigation }) {
                         </View>
                     </View>
                 </View>
-                <View></View>
             </View>
         </View>
         // </View>

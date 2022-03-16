@@ -103,7 +103,7 @@ export default function Usuario({ navigation }) {
             <Button
               mode="text"
               compact={true}
-              icon="account-edit"
+              icon="pencil"
               style={styles.buttonEdit}
               labelStyle={{ fontSize: 30 }}
               color="blue"

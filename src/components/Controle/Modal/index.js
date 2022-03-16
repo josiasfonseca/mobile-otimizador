@@ -3,6 +3,7 @@ import { Alert, Modal, Text, Pressable, View } from "react-native";
 import styles from './styles'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { Button } from 'react-native-paper';
 
 const ModalControle = ({ setModal, visibleModal, dados }) => {
 
@@ -60,16 +61,28 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
                                 confirmText="Confirmar"
                             />
                         </View>
-                        <View style={styles.viewButtons}>
-                            <View style={styles.viewCancelar}>
-                                <Pressable onPress={() => onCancel()}>
-                                    <Text>Cancelar</Text>
-                                </Pressable>
+                        <View style={styles.buttons}>
+                            <View style={styles.viewButtonCancelar}>
+                                <Button
+                                    style={styles.buttonCancelar}
+                                    icon="backspace"
+                                    // labelStyle={{ fontSize: 15}}
+                                    mode="contained"
+                                    color="#B22222"
+                                    onPress={() => ToastAndroid.show('Cancelar', ToastAndroid.LONG)}>
+                                    Cancelar
+                                </Button>
                             </View>
-                            <View style={styles.viewConfirmar}>
-                                <Pressable onPress={() => onConfirm()}>
-                                    <Text>Salvar</Text>
-                                </Pressable>
+                            <View style={styles.viewButtonSalvar}>
+                                <Button
+                                    style={styles.buttonSalvar}
+                                    icon="content-save"
+                                    // labelStyle={{ fontSize: 15 }}
+                                    mode="contained"
+                                    color="#3CB371"
+                                    onPress={() => ToastAndroid.show('Salvar', ToastAndroid.LONG)}>
+                                    Salvar
+                                </Button>
                             </View>
                         </View>
                     </View>
