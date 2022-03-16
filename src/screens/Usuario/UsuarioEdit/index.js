@@ -28,7 +28,6 @@ export default function Usuario({ navigation }) {
   const [user, setUser] = useState(usuario)
 
   const onChangeValueInput = (key, value) => {
-    console.log(key, value)
     setUser({ ...user, [key]: value })
   }
 

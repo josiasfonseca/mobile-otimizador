@@ -16,6 +16,7 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 
+import { serviceLogout } from '../../api/LoginService/index.js';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -40,6 +41,7 @@ export function DrawerComponent(props) {
     };
 
     const logout = async () => {
+        await serviceLogout()
         AsyncStorage.removeItem('TOKEN')
         showToast("Logout realizado")
         props.navigation.reset({

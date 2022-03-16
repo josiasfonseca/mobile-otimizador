@@ -47,7 +47,6 @@ export default function Importador({ navigation }) {
     };
 
     async function selectFile() {
-        console.log('SELECT FILE')
         // Opening Document Picker to select one file
         try {
 

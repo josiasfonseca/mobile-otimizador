@@ -10,12 +10,11 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ToastAndroid,
-  BackHandler
 } from 'react-native'
 import { faArrowRightToFile } from '@fortawesome/free-solid-svg-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
 import styles from './styles'
+import { serviceLogin }  from '../../api/LoginService'
 
 export default function Login({ navigation, route }) {
 
@@ -50,24 +49,6 @@ export default function Login({ navigation, route }) {
     }
   }
 
-  async function getToken() {
-    try {
-      const jsonValue = await AsyncStorage.getItem('TOKEN')
-      const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
-      if (retorno && retorno.token && retorno.user) {
-        setUserData(retorno.user)
-        setToken(retorno.token)
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        })
-      }
-    } catch (e) {
-      showToast(JSON.stringify(e))
-    }
-  }
-  // getToken()
-
   async function auth() {
     if(realizandoLogin) {
       showToast('Realizando login. Aguarde!')
@@ -80,20 +61,7 @@ export default function Login({ navigation, route }) {
         Alert.alert('Informe o usuário e a senha!')
         return
       }
-      await fetch(
-        urlAuth + '?login=' +
-        user +
-        '&password=' +
-        password,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-        .then(async (resp) => await resp.json())
+      await serviceLogin(user, password)
         .then(async (json) => {
           if (json) {
             if (json.access_token) {
@@ -110,13 +78,17 @@ export default function Login({ navigation, route }) {
             } else {
               showToast('Falha de autenticação!')
             }
+          } else {
+            showToast('Falha de autenticação!')
           }
         })
+        .catch(err => Alert.alert('Error' + JSON.stringify(err)))
+        .finally(() => realizandoLogin = false)
     } catch (e) {
       console.log(e)
     }
   }
-  // });
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

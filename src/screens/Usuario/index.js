@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, DataTable } from 'react-native-paper';
 
 import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
+import { getUsuarios } from '../../api/UsuarioService';
 
 export default function Usuario({ navigation }) {
 
@@ -14,82 +15,88 @@ export default function Usuario({ navigation }) {
 
   const [page, setPage] = React.useState(0);
   const [itemsPerPage, setItemsPerPage] = React.useState(optionsPerPage[0]);
+  const [users, setUsers] = useState([])
+  const teste = []
 
-  useEffect(() => {
+  useEffect(async () => {
     setPage(0);
-  }, [itemsPerPage]);
+    const result = await getUsuarios()
+    console.log('Busca uusario', result.data)
+    setUsers({...result.data})
+  }, []);
 
-  const users = [
-    {
-      id: '1',
-      email: 'joao@ifpr.edu.br',
-      nome: 'Usuario Teste a 1',
-    },
-    {
-      id: '2',
-      email: 'maria@ifpr.edu.br',
-      nome: 'Usuario Teste a 2',
-    },
-    {
-      id: '3',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '4',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '5',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '6',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '7',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '8',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '9',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '10',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '11',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '12',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
-    {
-      id: '13',
-      email: 'joana@ifpr.edu.br',
-      nome: 'Usuario Teste a 3',
-    },
+  // const users = [
+  //   {
+  //     id: '1',
+  //     email: 'joao@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 1',
+  //   },
+  //   {
+  //     id: '2',
+  //     email: 'maria@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 2',
+  //   },
+  //   {
+  //     id: '3',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '4',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '5',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '6',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '7',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '8',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '9',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '10',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '11',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '12',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
+  //   {
+  //     id: '13',
+  //     email: 'joana@ifpr.edu.br',
+  //     nome: 'Usuario Teste a 3',
+  //   },
 
-  ];
+  // ];
 
   const elements = []
   for (let i = 0; i < users.length; i++) {
+    console.log(users[i.nome])
     elements.push(users[i])
   }
 
