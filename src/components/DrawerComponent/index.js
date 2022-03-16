@@ -18,9 +18,7 @@ import {
 
 import { serviceLogout } from '../../api/LoginService/index.js';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as RootNavigation from '../../..//RootNavigation.js';
 import styles from './styles'
 // import{ AuthContext } from '../components/context';
 
@@ -113,7 +111,14 @@ export function DrawerComponent(props) {
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
-                    <View style={styles.userInfoSection}>
+                    <View style={styles.userInfoSection} onPress={ () => {
+                        props.navigation.reset(
+                            {
+                                index: 0,
+                                routes: [{ name: 'Home' }],
+                            }
+                        )
+                    }}>
                         <View style={{ flexDirection: 'row', marginTop: 30 }}>
                             <Avatar.Image
                                 source={require('../../../assets/account.png')}

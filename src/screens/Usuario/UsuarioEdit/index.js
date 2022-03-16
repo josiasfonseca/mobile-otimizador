@@ -11,49 +11,46 @@ import { Keyboard, Platform } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native';
 
-export default function Usuario({ navigation }) {
+import { getCep } from '../../../api/SharedService';
+export default function Usuario({ navigation, route }) {
 
   const usuario = {
-    id: '',
-    nome: '',
-    cep: '',
-    endereco: '',
-    numero: '',
-    complemento: '',
-    bairro: '',
-    cidade: '',
-    uf: ''
-    ,
+    id: '', nome: '', login: '', password: '', cpf: '', email: '', telefone: '', whatsapp: '', cep: '', endereco: '', numero: '', complemento: '',
+    bairro: '', cidade: '', uf: ''
   }
   const [user, setUser] = useState(usuario)
 
   const onChangeValueInput = (key, value) => {
     setUser({ ...user, [key]: value })
   }
+  useEffect(async () => {
+    console.log(route.params.usuario)
+    if(route.params && route.params.usuario.id_usuario ) {
+      if(route.params.usuario.id_usuario) {
+        setUser({ ...route.params.usuario })
+        console.log(route.params.usuario)
+      } else {
+        setUser({ ...usuario })
+      }
+    }
+  }, [route.params.usuario])
 
-  useEffect(() => {
-    if (user.cep.length == 8)
-      getCep()
+  useEffect(async () => {
+    if (user.cep.length == 8) {
+      const cepObj = await getCep(user.cep)
+      setUser({ ...user, ...cepObj })
+    }
   }, [user.cep])
 
-  const getCep = async () => {
-    const cep = user.cep
-    await fetch('https://viacep.com.br/ws/' + cep + '/json/',
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-      .then(res => res.json())
-      .then(json => {
-        setUser({ ...user, ...json })
-      })
-      .catch(err => console.log(err))
+  const getValueInitital = async (key) => {
+    const retorno = user[key] ? user[key].toString() : 'ss'
+    // console.log(retorno, typeof(retorno))
+    return retorno
   }
 
+  const salvar = async () => {
+
+  }
   return (
     // <KeyboardAvoidingView
     //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -70,6 +67,7 @@ export default function Usuario({ navigation }) {
               label="ID"
               mode="outlined"
               maxLength={100}
+              value={JSON.stringify(user.id_usuario)}
             />
           </View>
           <View style={styles.inputText}>
@@ -80,6 +78,7 @@ export default function Usuario({ navigation }) {
               label="Nome"
               mode="outlined"
               maxLength={100}
+              value={user.nome.toString()}
               onChangeText={(text) => onChangeValueInput('nome', text)}
             />
           </View>
@@ -90,6 +89,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Login"
               mode="outlined"
+              value={user.login.toString()}
+              onChangeText={(text) => onChangeValueInput('login', text.toLocaleLowerCase())}
             />
           </View>
           <View style={styles.inputText}>
@@ -100,7 +101,10 @@ export default function Usuario({ navigation }) {
               secureTextEntry
               right={<TextInput.Icon name="eye" />}
               label="Senha"
+              editable={user && user.id_usuario ? false : true}
               mode="outlined"
+              value={user.password ? user.password.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('password', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -109,7 +113,10 @@ export default function Usuario({ navigation }) {
               activeOutlineColor="#0e0e0e"
               placeholderTextColor="#cccccc"
               label="CPF"
+              keyboardType='numeric'
               mode="outlined"
+              value={user.cpf.toString()}
+              onChangeText={(text) => onChangeValueInput('cpf', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -119,6 +126,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Email"
               mode="outlined"
+              value={user.email.toString()}
+              onChangeText={(text) => onChangeValueInput('email', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -128,6 +137,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Telefone"
               mode="outlined"
+              value={user.telefone.toString()}
+              onChangeText={(text) => onChangeValueInput('telefone', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -137,6 +148,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="WhatsApp"
               mode="outlined"
+              value={user.whatsapp.toString()}
+              onChangeText={(text) => onChangeValueInput('whatspapp', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -145,7 +158,9 @@ export default function Usuario({ navigation }) {
               activeOutlineColor="#0e0e0e"
               placeholderTextColor="#cccccc"
               label="CEP"
+              keyboardType='numeric'
               mode="outlined"
+              value={user.cep.toString()}
               onChangeText={(text) => onChangeValueInput('cep', text)}
             />
           </View>
@@ -157,7 +172,7 @@ export default function Usuario({ navigation }) {
               label="Endereço"
               mode="outlined"
               editable={false}
-              value={user.logradouro}
+              value={user.logradouro ? user.logradouro.toString() : ''}
             />
           </View>
           <View style={styles.inputText}>
@@ -167,6 +182,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Número"
               mode="outlined"
+              value={user.numero ? user.numero.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('numero', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -176,7 +193,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Complemento"
               mode="outlined"
-              value={user.complemento}
+              value={user.complemento ? user.complemento.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('complemento', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -187,7 +205,7 @@ export default function Usuario({ navigation }) {
               label="Bairro"
               mode="outlined"
               editable={false}
-              value={user.bairro}
+              value={user.bairro ? user.bairro.toString() : ''}
             />
           </View>
           <View style={styles.inputText}>
@@ -198,7 +216,7 @@ export default function Usuario({ navigation }) {
               label="UF"
               mode="outlined"
               editable={false}
-              value={user.uf}
+              value={user.uf ? user.uf.toString() : ''}
             />
           </View>
           <View style={styles.inputText}>
@@ -209,7 +227,7 @@ export default function Usuario({ navigation }) {
               label="Código do Munícpio"
               mode="outlined"
               editable={false}
-              value={user.ibge}
+              value={user.ibge ? user.ibge.toString() : ''}
             />
           </View>
           <View style={styles.inputText}>
@@ -220,7 +238,7 @@ export default function Usuario({ navigation }) {
               label="Cidade"
               mode="outlined"
               editable={false}
-              value={user.localidade}
+              value={user.localidade ? user.localidade.toString() : ''}
             />
           </View>
           <View style={styles.buttons}>

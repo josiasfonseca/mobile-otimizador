@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     View,
     Text,
@@ -13,12 +13,23 @@ import ModalControle from '../../components/Controle/Modal';
 import { useState } from 'react';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { Button, DataTable } from 'react-native-paper';
 
 export default function Controle({ navigation }) {
 
     const [visibleModal, setVisibleModal] = useState(false)
     const [itemSelected, setItemSelected] = useState({})
     const [anoSelected, setAnoSelected] = useState([])
+
+    const optionsPerPage = [2, 3, 4];
+
+    const [page, setPage] = React.useState(0);
+    const [itemsPerPage, setItemsPerPage] = React.useState(optionsPerPage[0]);
+
+    useEffect(() => {
+        setPage(0);
+    }, [itemsPerPage]);
+
 
     function updateModal(item, value) {
         setVisibleModal(value)
@@ -105,30 +116,27 @@ export default function Controle({ navigation }) {
         }
     ]
 
+    const elements = []
+    for (let i = 0; i < DATA.length; i++) {
+        elements.push(DATA[i])
+    }
 
-    const renderItem = ({ item }) => (
-        <TouchableOpacity style={item.status == 1 ? styles.item : styles.itemError} onPress={() => updateModal(item, true)}>
-            <View style={styles.row} >
-                <View style={styles.itemCodigo} >
-                    <Text style={styles.textItemCodigo}>{item.id}</Text>
-                </View>
-                <View style={styles.itemNome}>
-                    <Text style={styles.textItemNome}>{item.mes}</Text>
-                </View>
-                <View style={styles.itemStatus}>
-                    <Text style={styles.textItemStatus}>{item.status == 1 ? 'OK' : 'Erro'}</Text>
-                </View>
-            </View>
-        </TouchableOpacity>
-    );
+    function renderDataItem(item, index) {
+        return (
+            <DataTable.Row style={item.status == 1 ? styles.item : styles.itemError} key={index} onPress={() => updateModal(item, true)}>
+                <DataTable.Cell numeric style={styles.cellId}>{item.id}</DataTable.Cell>
+                <DataTable.Cell style={styles.cellNome}>{item.mes}</DataTable.Cell>
+                <DataTable.Cell style={styles.cellAcao}>{item.status == 1 ? 'OK' : 'Erro'}</DataTable.Cell>
+            </DataTable.Row>
+        )
+    }
 
     return (
         //   <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
 
         <View style={styles.container}>
-            <View style={{ width: '100%' }} >
                 <View style={styles.viewReferencia}>
-                    <View style={{  padding: 15 }}>
+                    <View style={styles.viewTextReferencia}>
                         <Text style={styles.textReferencia}>Ano Referencia: </Text>
                     </View>
 
@@ -138,26 +146,43 @@ export default function Controle({ navigation }) {
                             IconRenderer={Icon}
                             uniqueKey="id"
                             subKey="children"
-                            selectText="Escolha o status..."
+                            selectText="Ano"
                             showDropDowns={true}
                             readOnlyHeadings={true}
                             onSelectedItemsChange={e => onSelectedAnoChange(e)}
                             selectedItems={anoSelected}
                             showCancelButton
                             single
-                            searchPlaceholderText="Status"
+                            searchPlaceholderText="Ano"
                             confirmText="Confirmar"
                         />
                     </View>
                 </View>
-            </View>
-            <View style={styles.viewFlatList}>
-                <FlatList
-                    data={DATA}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.id}
-                />
-            </View>
+            {/* <View style={styles.container}> */}
+                <DataTable>
+                    <DataTable.Header>
+                        <DataTable.Title numeric style={styles.titleId}>ID</DataTable.Title>
+                        <DataTable.Title style={styles.titleNome}>Nome</DataTable.Title>
+                        <DataTable.Title style={styles.titleAcao}>Ação</DataTable.Title>
+                    </DataTable.Header>
+
+                    <View>
+                        {elements.map((item, index) => renderDataItem(item, index))}
+                    </View>
+
+                    <DataTable.Pagination
+                        page={page}
+                        numberOfPages={3}
+                        onPageChange={(page) => setPage(page)}
+                        label="1-2 of 6"
+                        optionsPerPage={optionsPerPage}
+                        itemsPerPage={itemsPerPage}
+                        setItemsPerPage={setItemsPerPage}
+                        showFastPagination
+                        optionsLabel={'Rows per page'}
+                    />
+                </DataTable>
+            {/* </View> */}
 
             <ModalControle setModal={setVisibleModal} visibleModal={visibleModal} dados={itemSelected}></ModalControle>
         </View>

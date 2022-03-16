@@ -12,7 +12,6 @@ import Empresa from './src/screens/Empresa'
 import EmpresaEdit from './src/screens/Empresa/EmpresaEdit'
 import { NavigationContainer } from '@react-navigation/native'
 import { DrawerComponent } from './src/components/DrawerComponent';
-import { StatusBar } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 

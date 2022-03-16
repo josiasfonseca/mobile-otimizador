@@ -4,16 +4,16 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "center",
-    marginHorizontal: 20
+    marginHorizontal: 20,
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#E0DDDD",
     borderRadius: 20,
     padding: 35,
     shadowColor: "#000",
     shadowOffset: {
-      width: 0,
+      width: 2,
       height: 2
     },
     shadowOpacity: 0.25,
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     elevation: 2
   },
   viewSelect: {
-    backgroundColor: "#13B58C",
+    backgroundColor: "#BBB",
     borderRadius: 20,
     padding: 5,
     elevation: 2
@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
+    textAlign: "center",
+    fontSize: 18
   },
   viewButtons: {
     flexDirection: 'row',
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   viewConfirmar: {
-    backgroundColor: '#13B58C',
+    // backgroundColor: '#13B58C',
     height: 35,
     width: 100,
     alignItems: 'center',

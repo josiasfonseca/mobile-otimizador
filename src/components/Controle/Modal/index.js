@@ -4,6 +4,7 @@ import styles from './styles'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Button } from 'react-native-paper';
+import { ToastAndroid } from 'react-native';
 
 const ModalControle = ({ setModal, visibleModal, dados }) => {
 

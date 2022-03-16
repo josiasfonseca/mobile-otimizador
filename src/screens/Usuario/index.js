@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, DataTable } from 'react-native-paper';
+import { Button, DataTable, FAB, Portal, Provider } from 'react-native-paper';
 
 import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
@@ -21,89 +21,22 @@ export default function Usuario({ navigation }) {
   useEffect(async () => {
     setPage(0);
     const result = await getUsuarios()
-    console.log('Busca uusario', result.data)
-    setUsers({...result.data})
+    // console.log('Busca uusario', result.data)
+    setUsers(result.data)
   }, []);
-
-  // const users = [
-  //   {
-  //     id: '1',
-  //     email: 'joao@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 1',
-  //   },
-  //   {
-  //     id: '2',
-  //     email: 'maria@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 2',
-  //   },
-  //   {
-  //     id: '3',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '4',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '5',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '6',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '7',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '8',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '9',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '10',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '11',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '12',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-  //   {
-  //     id: '13',
-  //     email: 'joana@ifpr.edu.br',
-  //     nome: 'Usuario Teste a 3',
-  //   },
-
-  // ];
-
+  
   const elements = []
-  for (let i = 0; i < users.length; i++) {
-    console.log(users[i.nome])
-    elements.push(users[i])
+  const toRenderItems = async () => {
+    for (let i = 0; i < users.length; i++) {
+      elements.push(users[i])
+    }
   }
-
+  toRenderItems()
+  
   function renderDataItem(item, index) {
     return (
       <DataTable.Row key={index}>
-        <DataTable.Cell numeric style={styles.cellId}>{item.id}</DataTable.Cell>
+        <DataTable.Cell numeric style={styles.cellId}>{item.id_usuario}</DataTable.Cell>
         <DataTable.Cell style={styles.cellNome}>{item.nome}</DataTable.Cell>
         <DataTable.Cell style={styles.cellAcao}>
           <View style={styles.viewButtonEdit}>
@@ -114,7 +47,7 @@ export default function Usuario({ navigation }) {
               style={styles.buttonEdit}
               labelStyle={{ fontSize: 30 }}
               color="blue"
-              onPress={() => navigation.navigate('UsuarioEdit')} />
+              onPress={() => navigation.navigate('UsuarioEdit', { usuario: item })} />
           </View>
           <View style={styles.viewButtonDelete}>
             <Button
@@ -122,12 +55,13 @@ export default function Usuario({ navigation }) {
               compact={true}
               icon="trash-can"
               style={styles.buttonDelete}
-              labelStyle={{ fontSize: 30}}
+              labelStyle={{ fontSize: 30 }}
               color="red"
               onPress={() => showToast('Delete')} />
           </View>
         </DataTable.Cell>
       </DataTable.Row>
+      
     )
   }
 
@@ -153,9 +87,21 @@ export default function Usuario({ navigation }) {
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
           showFastPagination
-          optionsLabel={'Rows per page'}
+          optionsLabel={'Por página'}
         />
       </DataTable>
+      <Provider>
+      <Portal>
+        <FAB.Group
+          open={false}
+          icon={true ? 'plus' : 'plus'}
+          actions={[
+            { icon: 'plus', onPress: () => console.log('Pressed add') },
+          ]}
+          onStateChange={() => navigation.navigate('UsuarioEdit', {  usuario: {}})}
+        />
+      </Portal>
+    </Provider>
     </View>
   )
 }

@@ -121,7 +121,7 @@ export default function Login({ navigation, route }) {
                 style={styles.inputTextUsuario}
                 placeholderTextColor="#cccccc"
                 placeholder="Usuário"
-                onChangeText={(text) => setUser(text)}
+                onChangeText={(text) => setUser(text.toLocaleLowerCase())}
                 maxLength={20}
               />
             </View>
