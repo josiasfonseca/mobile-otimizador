@@ -3,46 +3,58 @@ import { StatusBar } from 'react-native';
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        color: '#E5E5E5',
-        marginTop: StatusBar.currentHeight || 0,
-      },
-      titleId: {
-          justifyContent: 'flex-start',
-          marginLeft: 2,
-          flex: 0.3,
-      },
-      titleNome: {
-        alignContent: 'center',
-        marginLeft: 2,
-        flex: 2,
-      },
-      titleAcao: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'center',
-        marginLeft: 2,
-        flex: 0.6,
-      },
-      cellId: {
-        justifyContent: 'flex-start',
-        marginLeft: 5,
-        flex: 0.3,
-      },
-      cellNome: {
-        alignContent: 'center',
-        marginLeft: 9,
-        flex: 2,
-      },
-      cellAcao: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'center',
-        flex:1.1,
-        flexDirection: 'row',
-      },  
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    color: '#E5E5E5',
+    marginTop: StatusBar.currentHeight || 0,
+  },
+  titleId: {
+    justifyContent: 'flex-start',
+    marginLeft: 2,
+    flex: 0.3,
+  },
+  titleNome: {
+    alignContent: 'center',
+    marginLeft: 2,
+    flex: 2,
+  },
+  titleAcao: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    marginLeft: 2,
+    flex: 0.6,
+  },
+  cellId: {
+    justifyContent: 'flex-start',
+    marginLeft: 5,
+    flex: 0.3,
+  },
+  cellNome: {
+    alignContent: 'center',
+    marginLeft: 9,
+    flex: 2,
+  },
+  cellAcao: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    flex: 1.1,
+    flexDirection: 'row',
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    opacity: 0.5,
+    marginTop: 0,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 export default styles

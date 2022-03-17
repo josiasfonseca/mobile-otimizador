@@ -12,44 +12,100 @@ import { TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native';
 
 import { getCep } from '../../../api/SharedService';
-export default function Usuario({ navigation, route }) {
+import { insertUsuario, updateUsuario } from '../../../api/UsuarioService';
+
+export default function UsuarioForm({ navigation, route }) {
 
   const usuario = {
-    id: '', nome: '', login: '', password: '', cpf: '', email: '', telefone: '', whatsapp: '', cep: '', endereco: '', numero: '', complemento: '',
-    bairro: '', cidade: '', uf: ''
+    id_usuario: '', nome: '', login: '', senha: '', cpf: '', email: '', telefone: '', whatsapp: '', cep: '', endereco: '', numero: '', complemento: '',
+    bairro: '', cidade: '', uf: '', tipo_usuario_id: 1
   }
   const [user, setUser] = useState(usuario)
+  const [retorno, setRetorno] = useState(null)
+  const [message, setMessage] = useState('')
 
   const onChangeValueInput = (key, value) => {
     setUser({ ...user, [key]: value })
   }
+
   useEffect(async () => {
-    console.log(route.params.usuario)
-    if(route.params && route.params.usuario.id_usuario ) {
-      if(route.params.usuario.id_usuario) {
-        setUser({ ...route.params.usuario })
-        console.log(route.params.usuario)
-      } else {
-        setUser({ ...usuario })
-      }
+    ToastAndroid.show(message, ToastAndroid.LONG)
+    console.log('RETORNO: ', retorno, message)
+    if (retorno == 200) {
+      setUser({ ...usuario })
+      navigation.navigate('Usuario')
+    }
+  }, [retorno])
+
+  useEffect(async () => {
+    setUser({ ...usuario })
+    const usuario_id = route.params
+      && route.params.usuario
+      && route.params.usuario.id_usuario
+      ? route.params.usuario.id_usuario
+      : null
+    console.log('ROUTE PARAMS', usuario_id)
+    if (usuario_id) {
+      navigation.setOptions({ title: 'Edição de Usuário ID: ' + usuario_id })
+      setUser({ ...route.params.usuario })
+    } else {
+      navigation.setOptions({ title: 'Inclusão de Usuário' })
+      setUser({ ...usuario })
     }
   }, [route.params.usuario])
 
   useEffect(async () => {
     if (user.cep.length == 8) {
       const cepObj = await getCep(user.cep)
-      setUser({ ...user, ...cepObj })
+      const obj = {
+        endereco: cepObj.logradouro,
+        cidade: cepObj.localidade,
+        codigo_municipio: cepObj.ibge,
+        uf: cepObj.uf,
+        bairro: cepObj.bairro
+      }
+      setUser({ ...user, ...obj })
     }
   }, [user.cep])
 
-  const getValueInitital = async (key) => {
-    const retorno = user[key] ? user[key].toString() : 'ss'
-    // console.log(retorno, typeof(retorno))
-    return retorno
-  }
-
   const salvar = async () => {
 
+    if (!user.id_usuario) {
+      if (user.tipo_usuario)
+        delete user.tipo_usuario
+      setUser({ ...user, id_usuario: '' })
+      await insertUsuario(user)
+        .then(res => {
+          console.log(res)
+          setMessage('Cadastro efetuado com sucesso!')
+          setRetorno(res)
+        })
+        .catch(err => {
+          setMessage(JSON.stringify(err.message ?? err))
+        })
+
+    } else {
+      delete user.created_at
+      delete user.deleted_at
+      delete user.updated_at
+      setUser({ ...user, updated_at: '', created_at: '' })
+      await updateUsuario(user.id_usuario, user)
+        .then(res => {
+          console.log(res)
+          setMessage('Cadastro atualizado com sucesso!')
+          setRetorno(res)
+        })
+        .catch(err => {
+          setMessage(JSON.stringify(err.message ?? err))
+        })
+    }
+
+    ToastAndroid.show(message, ToastAndroid.LONG)
+    console.log('RETORNO: ', retorno, message)
+    if (retorno == 200) {
+      setUser({ ...usuario })
+      navigation.navigate('Usuario')
+    }
   }
   return (
     // <KeyboardAvoidingView
@@ -67,7 +123,10 @@ export default function Usuario({ navigation, route }) {
               label="ID"
               mode="outlined"
               maxLength={100}
-              value={JSON.stringify(user.id_usuario)}
+              disabled={true}
+              keyboardType='numeric'
+              value={user.id_usuario ? user.id_usuario.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('id_usuario', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -78,7 +137,7 @@ export default function Usuario({ navigation, route }) {
               label="Nome"
               mode="outlined"
               maxLength={100}
-              value={user.nome.toString()}
+              value={user.nome ? user.nome.toString() : ''}
               onChangeText={(text) => onChangeValueInput('nome', text)}
             />
           </View>
@@ -89,7 +148,7 @@ export default function Usuario({ navigation, route }) {
               placeholderTextColor="#cccccc"
               label="Login"
               mode="outlined"
-              value={user.login.toString()}
+              value={user.login ? user.login.toString() : ''}
               onChangeText={(text) => onChangeValueInput('login', text.toLocaleLowerCase())}
             />
           </View>
@@ -101,10 +160,10 @@ export default function Usuario({ navigation, route }) {
               secureTextEntry
               right={<TextInput.Icon name="eye" />}
               label="Senha"
-              editable={user && user.id_usuario ? false : true}
+              editable={user && user.id_usuario && user.id_usuario != '' ? false : true}
               mode="outlined"
-              value={user.password ? user.password.toString() : ''}
-              onChangeText={(text) => onChangeValueInput('password', text)}
+              value={user.senha ? user.senha.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('senha', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -115,7 +174,7 @@ export default function Usuario({ navigation, route }) {
               label="CPF"
               keyboardType='numeric'
               mode="outlined"
-              value={user.cpf.toString()}
+              value={user.cpf ? user.cpf.toString() : ''}
               onChangeText={(text) => onChangeValueInput('cpf', text)}
             />
           </View>
@@ -126,7 +185,7 @@ export default function Usuario({ navigation, route }) {
               placeholderTextColor="#cccccc"
               label="Email"
               mode="outlined"
-              value={user.email.toString()}
+              value={user.email ? user.email.toString() : ''}
               onChangeText={(text) => onChangeValueInput('email', text)}
             />
           </View>
@@ -137,7 +196,7 @@ export default function Usuario({ navigation, route }) {
               placeholderTextColor="#cccccc"
               label="Telefone"
               mode="outlined"
-              value={user.telefone.toString()}
+              value={user.telefone ? user.telefone.toString() : ''}
               onChangeText={(text) => onChangeValueInput('telefone', text)}
             />
           </View>
@@ -148,7 +207,7 @@ export default function Usuario({ navigation, route }) {
               placeholderTextColor="#cccccc"
               label="WhatsApp"
               mode="outlined"
-              value={user.whatsapp.toString()}
+              value={user.whatsapp ? user.whatsapp.toString() : ''}
               onChangeText={(text) => onChangeValueInput('whatspapp', text)}
             />
           </View>
@@ -171,8 +230,8 @@ export default function Usuario({ navigation, route }) {
               placeholderTextColor="#cccccc"
               label="Endereço"
               mode="outlined"
-              editable={false}
-              value={user.logradouro ? user.logradouro.toString() : ''}
+              value={user.endereco ? user.endereco.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('endereco', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -206,6 +265,29 @@ export default function Usuario({ navigation, route }) {
               mode="outlined"
               editable={false}
               value={user.bairro ? user.bairro.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('bairro', text)}
+            />
+          </View>
+          <View style={styles.inputText}>
+            <TextInput
+              dense
+              activeOutlineColor="#0e0e0e"
+              placeholderTextColor="#cccccc"
+              label="Código do Munícpio"
+              mode="outlined"
+              editable={false}
+              value={user.codigo_municipio ? user.codigo_municipio.toString() : ''}
+            />
+          </View>
+          <View style={styles.inputText}>
+            <TextInput
+              dense
+              activeOutlineColor="#0e0e0e"
+              placeholderTextColor="#cccccc"
+              label="Cidade"
+              mode="outlined"
+              editable={false}
+              value={user.cidade ? user.cidade.toString() : ''}
             />
           </View>
           <View style={styles.inputText}>
@@ -217,28 +299,6 @@ export default function Usuario({ navigation, route }) {
               mode="outlined"
               editable={false}
               value={user.uf ? user.uf.toString() : ''}
-            />
-          </View>
-          <View style={styles.inputText}>
-            <TextInput
-              dense
-              activeOutlineColor="#0e0e0e"
-              placeholderTextColor="#cccccc"
-              label="Código do Munícpio"
-              mode="outlined"
-              editable={false}
-              value={user.ibge ? user.ibge.toString() : ''}
-            />
-          </View>
-          <View style={styles.inputText}>
-            <TextInput
-              dense
-              activeOutlineColor="#0e0e0e"
-              placeholderTextColor="#cccccc"
-              label="Cidade"
-              mode="outlined"
-              editable={false}
-              value={user.localidade ? user.localidade.toString() : ''}
             />
           </View>
           <View style={styles.buttons}>
@@ -260,7 +320,7 @@ export default function Usuario({ navigation, route }) {
                 // labelStyle={{ fontSize: 15 }}
                 mode="contained"
                 color="#3CB371"
-                onPress={() => ToastAndroid.show('Salvar', ToastAndroid.LONG)}>
+                onPress={() => salvar()}>
                 Salvar
               </Button>
             </View>

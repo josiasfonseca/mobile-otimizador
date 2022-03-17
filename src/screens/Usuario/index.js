@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, DataTable, FAB, Portal, Provider } from 'react-native-paper';
+import { ActivityIndicator, Button, DataTable, FAB, Portal, Provider } from 'react-native-paper';
 
 import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
@@ -11,20 +11,39 @@ export default function Usuario({ navigation }) {
     ToastAndroid.show(message, ToastAndroid.LONG);
   };
 
-  const optionsPerPage = [2, 3, 4];
 
-  const [page, setPage] = React.useState(0);
-  const [itemsPerPage, setItemsPerPage] = React.useState(optionsPerPage[0]);
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setitemsPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searching, setSearching] = useState(false)
+  const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
+
   const [users, setUsers] = useState([])
-  const teste = []
 
   useEffect(async () => {
-    setPage(0);
-    const result = await getUsuarios()
-    // console.log('Busca uusario', result.data)
-    setUsers(result.data)
+    await getApi()
   }, []);
-  
+
+  useEffect(async () => {
+    await getApi()
+  }, [page])
+
+  const updatePage = async (page) => {
+    if (!searching)
+      setPage(page)
+  }
+
+  const getApi = async () => {
+    setSearching(true)
+    setVisibleActivityIndicator(true)
+    const result = await getUsuarios(page)
+    setitemsPerPage(result.per_page)
+    setTotalPages(result.last_page)
+    setUsers(result.data)
+    setSearching(false)
+    setVisibleActivityIndicator(false)
+  }
+
   const elements = []
   const toRenderItems = async () => {
     for (let i = 0; i < users.length; i++) {
@@ -32,7 +51,7 @@ export default function Usuario({ navigation }) {
     }
   }
   toRenderItems()
-  
+
   function renderDataItem(item, index) {
     return (
       <DataTable.Row key={index}>
@@ -47,7 +66,7 @@ export default function Usuario({ navigation }) {
               style={styles.buttonEdit}
               labelStyle={{ fontSize: 30 }}
               color="blue"
-              onPress={() => navigation.navigate('UsuarioEdit', { usuario: item })} />
+              onPress={() => navigation.navigate('UsuarioForm', { usuario: item })} />
           </View>
           <View style={styles.viewButtonDelete}>
             <Button
@@ -61,7 +80,6 @@ export default function Usuario({ navigation }) {
           </View>
         </DataTable.Cell>
       </DataTable.Row>
-      
     )
   }
 
@@ -80,28 +98,33 @@ export default function Usuario({ navigation }) {
 
         <DataTable.Pagination
           page={page}
-          numberOfPages={3}
-          onPageChange={(page) => setPage(page)}
-          label="1-2 of 6"
-          optionsPerPage={optionsPerPage}
+          numberOfPages={totalPages + 1}
+          onPageChange={(page) => updatePage(page)}
+          label={page + " de " + totalPages}
+          optionsPerPage={itemsPerPage}
           itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-          showFastPagination
           optionsLabel={'Por página'}
+          showFastPaginationControls
         />
       </DataTable>
       <Provider>
-      <Portal>
-        <FAB.Group
-          open={false}
-          icon={true ? 'plus' : 'plus'}
-          actions={[
-            { icon: 'plus', onPress: () => console.log('Pressed add') },
-          ]}
-          onStateChange={() => navigation.navigate('UsuarioEdit', {  usuario: {}})}
-        />
-      </Portal>
-    </Provider>
+        <Portal>
+          <FAB.Group
+            open={false}
+            icon={true ? 'plus' : 'plus'}
+            actions={[
+              { icon: 'plus', onPress: () => console.log('Pressed add') },
+            ]}
+            onStateChange={() => navigation.navigate('UsuarioForm', { usuario: {} })}
+          />
+        </Portal>
+      </Provider>
+      {
+        visibleActivityIndicator &&
+        <View style={styles.loading}  >
+          <ActivityIndicator color='#13B58C' />
+        </View>
+      }
     </View>
   )
 }

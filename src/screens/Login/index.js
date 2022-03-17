@@ -14,20 +14,18 @@ import {
 import { faArrowRightToFile } from '@fortawesome/free-solid-svg-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import styles from './styles'
-import { serviceLogin }  from '../../api/LoginService'
+import { serviceLogin } from '../../api/LoginService'
+import { ActivityIndicator } from 'react-native-paper'
 
 export default function Login({ navigation, route }) {
 
   const [user, setUser] = useState(null)
   const [password, setPassword] = useState(null)
-  const [error, setError] = useState(null)
   const [token, setToken] = useState(null)
   const [userData, setUserData] = useState(null)
-  const [urlAuth] = useState('https://api-otimizador.herokuapp.com/api/auth/login')
+  const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
+
   let realizandoLogin = false
-  useEffect(async () => {
-    // await getToken()
-  }, []);
 
 
   function showToast(message) {
@@ -50,24 +48,25 @@ export default function Login({ navigation, route }) {
   }
 
   async function auth() {
-    if(realizandoLogin) {
+    if (realizandoLogin) {
       showToast('Realizando login. Aguarde!')
       return
     }
-    realizandoLogin = true
     try {
-
+      
       if (user == null || password == null) {
         Alert.alert('Informe o usuário e a senha!')
         return
       }
+      realizandoLogin = true
+      setVisibleActivityIndicator(true)
       await serviceLogin(user, password)
         .then(async (json) => {
           if (json) {
             if (json.access_token) {
               setToken(json.access_token)
               setUserData(json.user)
-              
+
               await storeData(json)
 
               showToast('Logado com sucesso!')
@@ -82,8 +81,11 @@ export default function Login({ navigation, route }) {
             showToast('Falha de autenticação!')
           }
         })
-        .catch(err => Alert.alert('Error' + JSON.stringify(err)))
-        .finally(() => realizandoLogin = false)
+        .catch(err => console.log('Error' + JSON.stringify(err)))
+        .finally(() => {
+          setVisibleActivityIndicator(false)
+          realizandoLogin = false
+        })
     } catch (e) {
       console.log(e)
     }
@@ -158,6 +160,12 @@ export default function Login({ navigation, route }) {
           </View>
         </View>
       </TouchableWithoutFeedback>
+          {
+            visibleActivityIndicator &&
+            <View style={styles.loading}  >
+              <ActivityIndicator color='#13B58C' />
+            </View>
+          }
     </KeyboardAvoidingView>
   )
 }

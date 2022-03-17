@@ -7,7 +7,7 @@ import Login from './src/screens/Login'
 import Home from './src/screens/Home'
 import Importador from './src/screens/Importador'
 import Usuario from './src/screens/Usuario'
-import UsuarioEdit from './src/screens/Usuario/UsuarioEdit'
+import UsuarioForm from './src/screens/Usuario/UsuarioForm'
 import Empresa from './src/screens/Empresa'
 import EmpresaEdit from './src/screens/Empresa/EmpresaEdit'
 import { NavigationContainer } from '@react-navigation/native'
@@ -42,7 +42,7 @@ export default function App() {
           <Drawer.Screen name="Controle" component={Controle} />
           <Drawer.Screen name="Importador" component={Importador} />
           <Drawer.Screen name="Usuario" component={Usuario} />
-          <Drawer.Screen name="UsuarioEdit" component={UsuarioEdit} options={{ title: 'Edição de Usuário' }} />
+          <Drawer.Screen name="UsuarioForm" component={UsuarioForm} options={{ title: 'Usuario' }} />
           <Drawer.Screen name="Empresa" component={Empresa} />
           <Drawer.Screen name="EmpresaEdit" component={EmpresaEdit} options={{ title: 'Edição de Empresa' }} />
       </Drawer.Navigator>
