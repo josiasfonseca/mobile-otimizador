@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
+  ActivityIndicator,
   Button,
   Text,
   TextInput
@@ -23,9 +24,15 @@ export default function UsuarioForm({ navigation, route }) {
   const [user, setUser] = useState(usuario)
   const [retorno, setRetorno] = useState(null)
   const [message, setMessage] = useState('')
-
+  const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
+  const [isSecureTextEntry, setIssecureTextEntry] = useState(true)
+  
   const onChangeValueInput = (key, value) => {
     setUser({ ...user, [key]: value })
+  }
+
+  const toogleIsSecureTextEntry = async () => {
+    setIssecureTextEntry(!isSecureTextEntry)
   }
 
   useEffect(async () => {
@@ -38,6 +45,7 @@ export default function UsuarioForm({ navigation, route }) {
   }, [retorno])
 
   useEffect(async () => {
+    setVisibleActivityIndicator(true)
     setUser({ ...usuario })
     const usuario_id = route.params
       && route.params.usuario
@@ -52,10 +60,13 @@ export default function UsuarioForm({ navigation, route }) {
       navigation.setOptions({ title: 'Inclusão de Usuário' })
       setUser({ ...usuario })
     }
+    setVisibleActivityIndicator(false)
+    console.log("USER SENHA: ", user.senha)
   }, [route.params.usuario])
 
   useEffect(async () => {
     if (user.cep.length == 8) {
+      setVisibleActivityIndicator(true)
       const cepObj = await getCep(user.cep)
       const obj = {
         endereco: cepObj.logradouro,
@@ -65,12 +76,23 @@ export default function UsuarioForm({ navigation, route }) {
         bairro: cepObj.bairro
       }
       setUser({ ...user, ...obj })
+      setVisibleActivityIndicator(false)
     }
   }, [user.cep])
 
+  const validarBeforeToSave = async() => {
+    const requiredsFields = ['nome', 'login', 'senha']
+    Object.keys(user).map(key => {
+      if(requiredsFields.filter(e => e == key) != -1) {
+        console.log('CMPO INVALIDP: ', key  )
+      }
+    })
+  }
   const salvar = async () => {
-
+    validarBeforeToSave()
+    return
     if (!user.id_usuario) {
+      setVisibleActivityIndicator(true)
       if (user.tipo_usuario)
         delete user.tipo_usuario
       setUser({ ...user, id_usuario: '' })
@@ -98,8 +120,9 @@ export default function UsuarioForm({ navigation, route }) {
         .catch(err => {
           setMessage(JSON.stringify(err.message ?? err))
         })
-    }
 
+    }
+    setVisibleActivityIndicator(false)
     ToastAndroid.show(message, ToastAndroid.LONG)
     console.log('RETORNO: ', retorno, message)
     if (retorno == 200) {
@@ -157,8 +180,8 @@ export default function UsuarioForm({ navigation, route }) {
               dense
               activeOutlineColor="#0e0e0e"
               placeholderTextColor="#cccccc"
-              secureTextEntry
-              right={<TextInput.Icon name="eye" />}
+              secureTextEntry={isSecureTextEntry}
+              right={<TextInput.Icon name={ isSecureTextEntry ? 'eye' : 'eye-off'} onPress={() => toogleIsSecureTextEntry()}/>}
               label="Senha"
               editable={user && user.id_usuario && user.id_usuario != '' ? false : true}
               mode="outlined"
@@ -325,6 +348,12 @@ export default function UsuarioForm({ navigation, route }) {
               </Button>
             </View>
           </View>
+          {
+            visibleActivityIndicator &&
+            <View style={styles.loading}  >
+              <ActivityIndicator color='#13B58C' />
+            </View>
+          }
         </View>
       </ScrollView>
     </TouchableWithoutFeedback>

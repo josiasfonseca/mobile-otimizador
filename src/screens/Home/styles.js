@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         color: '#E5E5E5',
-        marginTop: StatusBar.currentHeight || 0,
       },
       titleId: {
           justifyContent: 'flex-start',

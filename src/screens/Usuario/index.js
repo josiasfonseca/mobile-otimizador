@@ -4,6 +4,7 @@ import { ActivityIndicator, Button, DataTable, FAB, Portal, Provider } from 'rea
 import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
 import { getUsuarios } from '../../api/UsuarioService';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Usuario({ navigation }) {
 
@@ -14,11 +15,11 @@ export default function Usuario({ navigation }) {
 
   const [page, setPage] = useState(1);
   const [itemsPerPage, setitemsPerPage] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [searching, setSearching] = useState(false)
   const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
-
   const [users, setUsers] = useState([])
+
 
   useEffect(async () => {
     await getApi()
@@ -65,17 +66,17 @@ export default function Usuario({ navigation }) {
               icon="pencil"
               style={styles.buttonEdit}
               labelStyle={{ fontSize: 30 }}
-              color="blue"
+              color="#2C3E50"
               onPress={() => navigation.navigate('UsuarioForm', { usuario: item })} />
           </View>
           <View style={styles.viewButtonDelete}>
             <Button
               mode="text"
               compact={true}
-              icon="trash-can"
+              icon="trash-can-outline"
               style={styles.buttonDelete}
               labelStyle={{ fontSize: 30 }}
-              color="red"
+              color="#943126"
               onPress={() => showToast('Delete')} />
           </View>
         </DataTable.Cell>
@@ -84,18 +85,22 @@ export default function Usuario({ navigation }) {
   }
 
   return (
+
     <View style={styles.container}>
-      <DataTable>
+
+      <DataTable style={styles.datatable}>
         <DataTable.Header>
           <DataTable.Title numeric style={styles.titleId}>ID</DataTable.Title>
           <DataTable.Title style={styles.titleNome}>Nome</DataTable.Title>
           <DataTable.Title style={styles.titleAcao}>Ação</DataTable.Title>
         </DataTable.Header>
 
-        <View>
-          {elements.map((item, index) => renderDataItem(item, index))}
-        </View>
+        <ScrollView>
+          <View>
+            {elements.map((item, index) => renderDataItem(item, index))}
+          </View>
 
+        </ScrollView>
         <DataTable.Pagination
           page={page}
           numberOfPages={totalPages + 1}
@@ -109,13 +114,12 @@ export default function Usuario({ navigation }) {
       </DataTable>
       <Provider>
         <Portal>
-          <FAB.Group
+          <FAB
+            style={styles.fab}
             open={false}
-            icon={true ? 'plus' : 'plus'}
-            actions={[
-              { icon: 'plus', onPress: () => console.log('Pressed add') },
-            ]}
-            onStateChange={() => navigation.navigate('UsuarioForm', { usuario: {} })}
+            icon='plus'
+            color="#fff"
+            onPress={() => navigation.navigate('UsuarioForm', { usuario: {} })}
           />
         </Portal>
       </Provider>

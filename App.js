@@ -9,7 +9,7 @@ import Importador from './src/screens/Importador'
 import Usuario from './src/screens/Usuario'
 import UsuarioForm from './src/screens/Usuario/UsuarioForm'
 import Empresa from './src/screens/Empresa'
-import EmpresaEdit from './src/screens/Empresa/EmpresaEdit'
+import EmpresaForm from './src/screens/Empresa/EmpresaForm'
 import { NavigationContainer } from '@react-navigation/native'
 import { DrawerComponent } from './src/components/DrawerComponent';
 
@@ -44,7 +44,7 @@ export default function App() {
           <Drawer.Screen name="Usuario" component={Usuario} />
           <Drawer.Screen name="UsuarioForm" component={UsuarioForm} options={{ title: 'Usuario' }} />
           <Drawer.Screen name="Empresa" component={Empresa} />
-          <Drawer.Screen name="EmpresaEdit" component={EmpresaEdit} options={{ title: 'Edição de Empresa' }} />
+          <Drawer.Screen name="EmpresaForm" component={EmpresaForm} options={{ title: 'Edição de Empresa' }} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

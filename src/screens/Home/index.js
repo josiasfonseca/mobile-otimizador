@@ -23,67 +23,67 @@ export default function Home({ navigation }) {
         {
             id: '1',
             email: 'joao@ifpr.edu.br',
-            nome: 'Empresa Teste a 1',
+            nome: 'ROMAGUERA-CORKERY',
         },
         {
             id: '2',
-            email: 'maria@ifpr.edu.br',
-            nome: 'Empresa Teste a 2',
+            email: 'GREENFELDER-CARTWRIGHT',
+            nome: 'GREENFELDER-CARTWRIGHT',
         },
         {
             id: '3',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'HILPERT-MAGGIO',
         },
         {
             id: '4',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'TORP GROUP',
         },
         {
             id: '5',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'MORAR, KOHLER AND CRUICKSHANK',
         },
         {
             id: '6',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'HAMMES-DECKOW',
         },
         {
             id: '7',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'DOYLE-JOHNSTON',
         },
         {
             id: '8',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'LABADIE, CRUICKSHANK AND HOWE',
         },
         {
             id: '9',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'BLANDA-MACEJKOVIC',
         },
         {
             id: '10',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'BERNHARD INC',
         },
         {
             id: '11',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'DARE-GAYLORD3',
         },
         {
             id: '12',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'KULAS-MCDERMOTT',
         },
         {
             id: '13',
             email: 'joana@ifpr.edu.br',
-            nome: 'Empresa Teste a 3',
+            nome: 'ZIEMANN-ZBONCAK',
         },
 
     ];
@@ -106,7 +106,7 @@ export default function Home({ navigation }) {
                             uppercase={false}
                             icon="playlist-check"
                             labelStyle={{ fontSize: 30 }}
-                            color="blue"
+                            color="#2C3E50"
                             onPress={() => navigation.navigate('Controle')} >
                         </Button>
                     </View>
@@ -117,7 +117,7 @@ export default function Home({ navigation }) {
                             uppercase={false}
                             icon="database-import"
                             labelStyle={{ fontSize: 30 }}
-                            color="red"
+                            color="#943126"
                             onPress={() => navigation.navigate('Importador')} >
                         </Button>
                     </View>

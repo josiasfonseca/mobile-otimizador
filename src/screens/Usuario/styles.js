@@ -7,7 +7,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     color: '#E5E5E5',
-    marginTop: StatusBar.currentHeight || 0,
+  },
+  datatable: {
+    width: '100%',
+    height: '98%'
   },
   titleId: {
     justifyContent: 'flex-start',
@@ -49,12 +52,18 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    opacity: 0.5,
-    marginTop: 0,
+    opacity: 0.7,
     backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 10,
+    bottom: 80,
+    backgroundColor: '#13B58C'
+  },
 });
 
 export default styles

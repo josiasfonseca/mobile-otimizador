@@ -11,54 +11,93 @@ import { Keyboard, Platform } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native';
 
-export default function Usuario({ navigation }) {
+import { getCep } from '../../../api/SharedService';
+import { insertEmpresa, updateEmpresa } from '../../../api/EmpresaService';
 
-  const usuario = {
+export default function EmpresaForm({ navigation, route }) {
+
+  const empresa = {
     id: '',
     nome: '',
+    razao_social: '',
+    cnpj: '',
+    ie: '',
+    im: '',
+    tipo: '',
+    email: '',
+    contato: '',
+    telefone: '',
+    whatsapp: '',
     cep: '',
-    endereco: '',
+    enderecp: '',
     numero: '',
     complemento: '',
     bairro: '',
+    codigo_municipio: '',
+    usuario_id: 1,
     cidade: '',
     uf: ''
     ,
   }
-  const [user, setUser] = useState(usuario)
+
+  const [company, setCompany] = useState(empresa)
+  const [retorno, setRetorno] = useState(null)
+  const [message, setMessage] = useState('')
+  const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
 
   const onChangeValueInput = (key, value) => {
-    setUser({ ...user, [key]: value })
+    setCompany({ ...company, [key]: value })
   }
 
-  useEffect(() => {
-    if (user.cep.length == 8)
-      getCep()
-  }, [user.cep])
+  useEffect(async () => {
+    ToastAndroid.show(message, ToastAndroid.LONG)
+    console.log('RETORNO: ', retorno, message)
+    if (retorno == 200) {
+      setCompany({ ...company })
+      navigation.navigate('Empresa')
+    }
+  }, [retorno])
 
-  const getCep = async () => {
-    const cep = user.cep
-    await fetch('https://viacep.com.br/ws/' + cep + '/json/',
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+  useEffect(async () => {
+    setVisibleActivityIndicator(true)
+    setCompany({ ...company })
+    const company_id = route.params
+      && route.params.company
+      && route.params.company.id_empresa
+      ? route.params.company.id_empresa
+      : null
+    console.log('ROUTE PARAMS', company_id)
+    if (company_id) {
+      navigation.setOptions({ title: 'Edição de Empresa ID: ' + company_id })
+      setCompany({ ...route.params.empresa })
+    } else {
+      navigation.setOptions({ title: 'Inclusão de Empresa' })
+      setCompany({ ...company })
+    }
+    setVisibleActivityIndicator(false)
+  }, [route.params.empresa])
+
+  useEffect(async () => {
+    if (company.cep.length == 8) {
+      setVisibleActivityIndicator(true)
+      const cepObj = await getCep(company.cep)
+      const obj = {
+        endereco: cepObj.logradouro,
+        cidade: cepObj.localidade,
+        codigo_municipio: cepObj.ibge,
+        uf: cepObj.uf,
+        bairro: cepObj.bairro
       }
-    )
-      .then(res => res.json())
-      .then(json => {
-        setUser({ ...user, ...json })
-      })
-      .catch(err => console.log(err))
-  }
+      setCompany({ ...company, ...obj })
+      setVisibleActivityIndicator(false)
+    }
+  }, [company.cep])
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView>
         <View style={styles.container}>
-          <View style={styles.inputText}>
+        <View style={styles.inputText}>
             <TextInput
               dense
               activeOutlineColor="#0e0e0e"
@@ -66,6 +105,10 @@ export default function Usuario({ navigation }) {
               label="ID"
               mode="outlined"
               maxLength={100}
+              disabled={true}
+              keyboardType='numeric'
+              value={company.id_empresa ? company.id_empresa.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('id_empresa', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -76,6 +119,7 @@ export default function Usuario({ navigation }) {
               label="Nome"
               mode="outlined"
               maxLength={100}
+              value={company.nome ? company.nome.toString() : ''}
               onChangeText={(text) => onChangeValueInput('nome', text)}
             />
           </View>
@@ -84,8 +128,11 @@ export default function Usuario({ navigation }) {
               dense
               activeOutlineColor="#0e0e0e"
               placeholderTextColor="#cccccc"
-              label="Login"
+              label="Razao Social"
               mode="outlined"
+              maxLength={100}
+              value={company.razao_social ? company.razao_social.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('razao_social', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -93,10 +140,11 @@ export default function Usuario({ navigation }) {
               dense
               activeOutlineColor="#0e0e0e"
               placeholderTextColor="#cccccc"
-              secureTextEntry
-              right={<TextInput.Icon name="eye" />}
-              label="Senha"
+              label="CNPJ"
               mode="outlined"
+              maxLength={100}
+              value={company.cnpj ? company.cnpj.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('cnpj', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -104,8 +152,35 @@ export default function Usuario({ navigation }) {
               dense
               activeOutlineColor="#0e0e0e"
               placeholderTextColor="#cccccc"
-              label="CPF"
+              label="IE"
               mode="outlined"
+              maxLength={100}
+              value={company.ie ? company.ie.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('ie', text)}
+            />
+          </View>
+          <View style={styles.inputText}>
+            <TextInput
+              dense
+              activeOutlineColor="#0e0e0e"
+              placeholderTextColor="#cccccc"
+              label="IM"
+              mode="outlined"
+              maxLength={100}
+              value={company.im ? company.im.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('im', text)}
+            />
+          </View>
+          <View style={styles.inputText}>
+            <TextInput
+              dense
+              activeOutlineColor="#0e0e0e"
+              placeholderTextColor="#cccccc"
+              label="Tipo"
+              mode="outlined"
+              maxLength={100}
+              value={company.tipo ? company.tipo.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('tipo', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -115,6 +190,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Email"
               mode="outlined"
+              value={company.email ? company.email.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('email', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -124,6 +201,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Telefone"
               mode="outlined"
+              value={company.telefone ? company.telefone.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('telefone', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -133,6 +212,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="WhatsApp"
               mode="outlined"
+              value={company.whatsapp ? company.whatsapp.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('whatspapp', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -141,7 +222,9 @@ export default function Usuario({ navigation }) {
               activeOutlineColor="#0e0e0e"
               placeholderTextColor="#cccccc"
               label="CEP"
+              keyboardType='numeric'
               mode="outlined"
+              value={company.cep.toString()}
               onChangeText={(text) => onChangeValueInput('cep', text)}
             />
           </View>
@@ -152,8 +235,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Endereço"
               mode="outlined"
-              editable={false}
-              value={user.logradouro}
+              value={company.endereco ? company.endereco.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('endereco', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -163,6 +246,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Número"
               mode="outlined"
+              value={company.numero ? company.numero.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('numero', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -172,7 +257,8 @@ export default function Usuario({ navigation }) {
               placeholderTextColor="#cccccc"
               label="Complemento"
               mode="outlined"
-              value={user.complemento}
+              value={company.complemento ? company.complemento.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('complemento', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -183,18 +269,8 @@ export default function Usuario({ navigation }) {
               label="Bairro"
               mode="outlined"
               editable={false}
-              value={user.bairro}
-            />
-          </View>
-          <View style={styles.inputText}>
-            <TextInput
-              dense
-              activeOutlineColor="#0e0e0e"
-              placeholderTextColor="#cccccc"
-              label="UF"
-              mode="outlined"
-              editable={false}
-              value={user.uf}
+              value={company.bairro ? company.bairro.toString() : ''}
+              onChangeText={(text) => onChangeValueInput('bairro', text)}
             />
           </View>
           <View style={styles.inputText}>
@@ -205,7 +281,7 @@ export default function Usuario({ navigation }) {
               label="Código do Munícpio"
               mode="outlined"
               editable={false}
-              value={user.ibge}
+              value={company.codigo_municipio ? company.codigo_municipio.toString() : ''}
             />
           </View>
           <View style={styles.inputText}>
@@ -216,7 +292,18 @@ export default function Usuario({ navigation }) {
               label="Cidade"
               mode="outlined"
               editable={false}
-              value={user.localidade}
+              value={company.cidade ? company.cidade.toString() : ''}
+            />
+          </View>
+          <View style={styles.inputText}>
+            <TextInput
+              dense
+              activeOutlineColor="#0e0e0e"
+              placeholderTextColor="#cccccc"
+              label="UF"
+              mode="outlined"
+              editable={false}
+              value={company.uf ? company.uf.toString() : ''}
             />
           </View>
           <View style={styles.buttons}>
@@ -235,14 +322,19 @@ export default function Usuario({ navigation }) {
               <Button
                 style={styles.buttonSalvar}
                 icon="content-save"
-                // labelStyle={{ fontSize: 15 }}
                 mode="contained"
                 color="#3CB371"
-                onPress={() => ToastAndroid.show('Salvar', ToastAndroid.LONG)}>
+                onPress={() => salvar()}>
                 Salvar
               </Button>
             </View>
           </View>
+          {
+            visibleActivityIndicator &&
+            <View style={styles.loading}  >
+              <ActivityIndicator color='#13B58C' />
+            </View>
+          }
         </View>
       </ScrollView>
     </TouchableWithoutFeedback>
