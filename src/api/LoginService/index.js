@@ -23,9 +23,9 @@ export const serviceLogout = async () => {
     try {
         const baseURL = http.defaults.baseURL
         return await http.get(baseURL + 'auth/logout')
-        .then((resp) => {
-            return resp.data
-        })
+            .then((resp) => {
+                return resp.data
+            })
             .catch(err => {
                 throw err
             })

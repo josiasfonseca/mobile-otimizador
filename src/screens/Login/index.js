@@ -28,6 +28,12 @@ export default function Login({ navigation, route }) {
   let realizandoLogin = false
 
 
+  useEffect(async() => {
+    return function cleanup() {
+      setVisibleActivityIndicator(false)
+    }
+  })
+  
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.LONG);
   };
@@ -163,7 +169,7 @@ export default function Login({ navigation, route }) {
           {
             visibleActivityIndicator &&
             <View style={styles.loading}  >
-              <ActivityIndicator color='#13B58C' />
+              <ActivityIndicator color='#13B58C' animating={visibleActivityIndicator}/>
             </View>
           }
     </KeyboardAvoidingView>

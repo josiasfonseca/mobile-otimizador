@@ -24,9 +24,9 @@ import styles from './styles'
 
 export function DrawerComponent(props) {
 
-    useEffect(() => {
-        getDadosToken()
-    });
+    useEffect(async () => {
+        await getDadosToken()
+    },[]);
 
     // const paperTheme = useTheme();
     // const { signOut, toggleTheme } = React.useContext(AuthContext);
@@ -47,7 +47,6 @@ export function DrawerComponent(props) {
             routes: [{ name: 'Login' }],
         })
     }
-
     async function getDadosToken() {
 
         try {

@@ -30,7 +30,7 @@ export default function App() {
     <NavigationContainer >
       <Drawer.Navigator
         drawerContent={props => <DrawerComponent {...props} />}
-        initialRouteName="Login"
+        initialRouteName="Usuario"
         screenOptions={screensOptions}
         backBehavior='history'
       >

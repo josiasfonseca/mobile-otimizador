@@ -6,17 +6,13 @@ import styles from './styles'
 
 export default function Home({ navigation }) {
 
-    function showToast(message) {
-        ToastAndroid.show(message, ToastAndroid.LONG);
-    };
-
     const optionsPerPage = [2, 3, 4];
 
     const [page, setPage] = React.useState(0);
     const [itemsPerPage, setItemsPerPage] = React.useState(optionsPerPage[0]);
 
     useEffect(() => {
-        setPage(0);
+        setPage(1);
     }, [itemsPerPage]);
 
     const companies = [

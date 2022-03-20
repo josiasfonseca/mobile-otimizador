@@ -39,26 +39,22 @@ export const insertEmpresa = async (empresa) => {
         const baseURL = http.defaults.baseURL
         return await http.post(baseURL + 'empresas/', empresa)
         .then((resp) => {
-            ToastAndroid.show(JSON.stringify(resp.status), ToastAndroid.LONG)
-            return resp.status
+            return resp
         })
             .catch(err => {
-                ToastAndroid.show(JSON.stringify(err.response.data), ToastAndroid.LONG)
                 throw err
             })
     } catch (e) {
-        ToastAndroid.show(JSON.stringify(e.response.data), ToastAndroid.LONG)
         console.log(e)
     }
 }
 
 export const updateEmpresa = async (id, empresa) => {
     try {
-        console.log("update", id, empresa)
         const baseURL = http.defaults.baseURL
         return await http.put(baseURL + 'empresas/' + id, empresa)
         .then((resp) => {
-            return resp.status
+            return resp
         })
             .catch(err => {
                 ToastAndroid.show(JSON.stringify(err.response.data), ToastAndroid.LONG)

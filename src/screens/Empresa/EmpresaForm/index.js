@@ -51,7 +51,6 @@ export default function EmpresaForm({ navigation, route }) {
 
   useEffect(async () => {
     ToastAndroid.show(message, ToastAndroid.LONG)
-    console.log('RETORNO: ', retorno, message)
     if (retorno == 200) {
       setCompany({ ...company })
       navigation.navigate('Empresa')
@@ -66,7 +65,6 @@ export default function EmpresaForm({ navigation, route }) {
       && route.params.company.id_empresa
       ? route.params.company.id_empresa
       : null
-    console.log('ROUTE PARAMS', company_id)
     if (company_id) {
       navigation.setOptions({ title: 'Edição de Empresa ID: ' + company_id })
       setCompany({ ...route.params.empresa })

@@ -1,5 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
+// any js module
+import { ToastAndroid } from 'react-native';
+import { Alert } from 'react-native';
+
 
 const http = axios.create({
   baseURL: 'https://api-otimizador.herokuapp.com/api/',
@@ -25,6 +29,43 @@ http.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error)
+  }
+)
+
+http.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  async function (error) {
+    const originalRequest = (await error) && error.config ? error.config : null
+    const errorStatus = error && error.response ? error.response.status : null
+    const errorText = error && error.response ? error.response.data.errors : null
+    if(errorText) {
+      Alert.alert(JSON.stringify(errorText))
+    }
+    const urlLogout =
+      error && error.config ? error.config.baseURL + 'auth/logout' : ''
+    /*
+     * Quando a requisição tem status 401 e statusText,
+     * será gerado uma nova requisição para gerar um novo token automaticamente
+     */
+    if (errorStatus === 401 && originalRequest.url != urlLogout) {
+      const baseURL = http.defaults.baseURL
+      return await http.get(baseURL + 'auth/logout')
+        .then((resp) => {
+          AsyncStorage.removeItem('TOKEN')
+          ToastAndroid.show("Logout realizado", ToastAndroid.LONG)
+          RootNavigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          })
+          return resp.data
+        })
+        .catch(err => {
+          throw err
+        })
+    }
+
   }
 )
 

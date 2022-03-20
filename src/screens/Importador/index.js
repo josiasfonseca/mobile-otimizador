@@ -51,7 +51,6 @@ export default function Importador({ navigation }) {
         try {
 
             const res = await DocumentPicker.getDocumentAsync({});
-            // console.log('res : ' + JSON.stringify(res));
             if (res && res.type == 'success')
                 setSingleFile(res);
 

@@ -13,8 +13,8 @@ export default function Usuario({ navigation }) {
   };
 
 
-  const [page, setPage] = useState(1);
-  const [itemsPerPage, setitemsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+  const [itemsPerPage, setitemsPerPage] = useState(15);
   const [totalPages, setTotalPages] = useState(1);
   const [searching, setSearching] = useState(false)
   const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
@@ -30,6 +30,7 @@ export default function Usuario({ navigation }) {
   }, [page])
 
   const updatePage = async (page) => {
+    console.log(page)
     if (!searching)
       setPage(page)
   }
@@ -37,9 +38,10 @@ export default function Usuario({ navigation }) {
   const getApi = async () => {
     setSearching(true)
     setVisibleActivityIndicator(true)
-    const result = await getUsuarios(page)
+    const result = await getUsuarios(page + 1)
     setitemsPerPage(result.per_page)
-    setTotalPages(result.last_page)
+    console.log('TOTAL PAGES: ' , result.last_page)
+    setTotalPages(result.last_page - 1)
     setUsers(result.data)
     setSearching(false)
     setVisibleActivityIndicator(false)
@@ -105,10 +107,11 @@ export default function Usuario({ navigation }) {
           page={page}
           numberOfPages={totalPages + 1}
           onPageChange={(page) => updatePage(page)}
-          label={page + " de " + totalPages}
+          label={(page + 1) + " de " + (totalPages + 1)}
           optionsPerPage={itemsPerPage}
           itemsPerPage={itemsPerPage}
-          optionsLabel={'Por página'}
+          numberOfItemsPerPage={15}
+          onItemsPerPageChange={(n) => console.log(n)}
           showFastPaginationControls
         />
       </DataTable>

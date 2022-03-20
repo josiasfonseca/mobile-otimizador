@@ -6,15 +6,14 @@ export const getUsuarios = async (page) => {
         const baseURL = http.defaults.baseURL
         const url = baseURL + 'usuarios?page=' + page
         return await http.get(url)
-        .then((resp) => {
-            return resp.data
-        })
+            .then((resp) => {
+                return resp.data
+            })
             .catch(err => {
-                console.log(err)
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        console.log('ERR 22 ', e)
     }
 }
 
@@ -22,50 +21,57 @@ export const getUsuario = async (id) => {
     try {
         const baseURL = http.defaults.baseURL
         return await http.get(baseURL + 'usuarios/' + id)
-        .then((resp) => {
-            return resp.data
-        })
+            .then((resp) => {
+                return resp.data
+            })
             .catch(err => {
                 console.log(err)
                 throw err
             })
-        } catch (e) {
-            console.log(e)
+    } catch (e) {
+        console.log(e)
     }
 }
 
+const removeCaracteres = (value) => {
+    return value.replace(/[^0-9]/g, '')
+}
 export const insertUsuario = async (usuario) => {
     try {
+        console.log(usuario)
+        console.log('SALVAR')
+        // const fields = ['cpf', 'telefone', 'whatsapp', 'cep', 'login']
+        const usu = ({...usuario, cpf: removeCaracteres(usuario.cpf), 
+                                  telefone: removeCaracteres(usuario.telefone), 
+                                  whatsapp: removeCaracteres(usuario.whatsapp), 
+                                  cep: removeCaracteres(usuario.cep), 
+                                  login: removeCaracteres(usuario.login)})
         const baseURL = http.defaults.baseURL
-        return await http.post(baseURL + 'usuarios/', usuario)
-        .then((resp) => {
-            ToastAndroid.show(JSON.stringify(resp.status), ToastAndroid.LONG)
-            return resp.status
-        })
+        return await http.post(baseURL + 'usuarios/', usu)
+            .then((resp) => {
+                return resp
+            })
             .catch(err => {
-                ToastAndroid.show(JSON.stringify(err.response.data), ToastAndroid.LONG)
                 throw err
             })
     } catch (e) {
-        ToastAndroid.show(JSON.stringify(e.response.data), ToastAndroid.LONG)
         console.log(e)
     }
 }
 
 export const updateUsuario = async (id, usuario) => {
     try {
-        console.log("update", id, usuario)
         const baseURL = http.defaults.baseURL
         return await http.put(baseURL + 'usuarios/' + id, usuario)
-        .then((resp) => {
-            return resp.status
-        })
+            .then((resp) => {
+                return resp
+            })
             .catch(err => {
-                ToastAndroid.show(JSON.stringify(err.response.data), ToastAndroid.LONG)
+                ToastAndroid.show(JSON.stringify(err), ToastAndroid.LONG)
                 throw err
             })
     } catch (e) {
-        ToastAndroid.show(JSON.stringify(e.response.data), ToastAndroid.LONG)
+        ToastAndroid.show(JSON.stringify(e), ToastAndroid.LONG)
         console.log(e)
     }
 }

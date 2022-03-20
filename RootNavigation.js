@@ -10,4 +10,10 @@ export function navigate(name, params) {
   }
 }
 
+export function reset(name, params) {
+  if (navigationRef.isReady()) {
+    navigationRef.reset(name, params);
+  }
+}
+
 // add other navigation functions that you need and export them
