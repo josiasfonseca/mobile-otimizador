@@ -77,3 +77,20 @@ export const updateUsuario = async (id, usuario) => {
         console.log(e)
     }
 }
+
+export const deleteUsuario = async (id) => {
+    try {
+        const baseURL = http.defaults.baseURL
+        return await http.delete(baseURL + 'usuarios/' + id)
+            .then((resp) => {   
+                return resp
+            })
+            .catch(err => {
+                ToastAndroid.show(JSON.stringify(err), ToastAndroid.LONG)
+                throw err
+            })
+    } catch (e) {
+        ToastAndroid.show(JSON.stringify(e), ToastAndroid.LONG)
+        console.log(e)
+    }
+}

@@ -67,17 +67,20 @@ export function DrawerComponent(props) {
         {
             nameIcon: 'home',
             label: 'Home',
-            route: 'Home'
+            route: 'Home',
+            params: {}
         },
         {
             nameIcon: 'account',
             label: 'Usuarios',
-            route: 'Usuario'
+            route: 'Usuario',
+            params: { usuario: {}}
         },
         {
             nameIcon: 'store',
             label: 'Empresas',
-            route: 'Empresa'
+            route: 'Empresa',
+            params: { empresa: {}}
         },
     ]
     const elements = []
@@ -100,6 +103,7 @@ export function DrawerComponent(props) {
                         {
                             index: 0,
                             routes: [{ name: item.route }],
+                            params: item.params
                         }
                     )
                 }

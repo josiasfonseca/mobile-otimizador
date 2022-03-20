@@ -74,3 +74,20 @@ export const updateEmpresa = async (id, empresa) => {
         console.log(e)
     }
 }
+
+export const deleteEmpresa = async (id) => {
+    try {
+        const baseURL = http.defaults.baseURL
+        return await http.delete(baseURL + 'empresas/' + id)
+            .then((resp) => {   
+                return resp
+            })
+            .catch(err => {
+                ToastAndroid.show(JSON.stringify(err), ToastAndroid.LONG)
+                throw err
+            })
+    } catch (e) {
+        ToastAndroid.show(JSON.stringify(e), ToastAndroid.LONG)
+        console.log(e)
+    }
+}

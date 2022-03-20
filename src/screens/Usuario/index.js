@@ -5,6 +5,8 @@ import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
 import { getUsuarios } from '../../api/UsuarioService';
 import { ScrollView } from 'react-native-gesture-handler';
+import { deleteUsuario } from '../../api/UsuarioService';
+import { Alert } from 'react-native';
 
 export default function Usuario({ navigation, route }) {
 
@@ -36,6 +38,7 @@ export default function Usuario({ navigation, route }) {
   }
 
   useEffect(async () => {
+    console.log('AQUI USUER', route.params)
     if (route.params && route.params.atualizar && route.params.atualizar == 'S')
       await getApi()
   }, [route.params]);
@@ -51,6 +54,34 @@ export default function Usuario({ navigation, route }) {
     setVisibleActivityIndicator(false)
   }
 
+  const confirmToDeleteUser = async (u) => {
+    Alert.alert(
+      "Exclusão",
+      "Confima exclusão do usuário " + u.id_usuario + ' ?',
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => deleteUser(u.id_usuario) }
+      ]
+    );
+  }
+
+  const deleteUser = async(id) => {
+    setVisibleActivityIndicator(true)
+    await deleteUsuario(id)
+    .then(async res => {
+      console.log(res)
+      ToastAndroid.show(`Usuário ${id} excluído com sucesso!`, ToastAndroid.LONG)
+      await getApi()
+    })
+    .catch(err => {
+      ToastAndroid.show(`Erro de exclusão! ${JSON.stringify(err)}`, ToastAndroid.LONG)
+    })
+    setVisibleActivityIndicator(false)
+  }
+  
   const elements = []
   const toRenderItems = async () => {
     for (let i = 0; i < users.length; i++) {
@@ -59,11 +90,11 @@ export default function Usuario({ navigation, route }) {
   }
   toRenderItems()
 
-  function renderDataItem(item, index) {
+  function renderDataItem(usuarioRow, index) {
     return (
       <DataTable.Row key={index}>
-        <DataTable.Cell numeric style={styles.cellId}>{item.id_usuario}</DataTable.Cell>
-        <DataTable.Cell style={styles.cellNome}>{item.nome}</DataTable.Cell>
+        <DataTable.Cell numeric style={styles.cellId}>{usuarioRow.id_usuario}</DataTable.Cell>
+        <DataTable.Cell style={styles.cellNome}>{usuarioRow.nome}</DataTable.Cell>
         <DataTable.Cell style={styles.cellAcao}>
           <View style={styles.viewButtonEdit}>
             <Button
@@ -73,7 +104,7 @@ export default function Usuario({ navigation, route }) {
               style={styles.buttonEdit}
               labelStyle={{ fontSize: 30 }}
               color="#2C3E50"
-              onPress={() => navigation.navigate('UsuarioForm', { usuario: item })} />
+              onPress={() => navigation.navigate('UsuarioForm', { usuario: usuarioRow })} />
           </View>
           <View style={styles.viewButtonDelete}>
             <Button
@@ -83,7 +114,7 @@ export default function Usuario({ navigation, route }) {
               style={styles.buttonDelete}
               labelStyle={{ fontSize: 30 }}
               color="#943126"
-              onPress={() => showToast('Delete')} />
+              onPress={() => confirmToDeleteUser(usuarioRow)} />
           </View>
         </DataTable.Cell>
       </DataTable.Row>

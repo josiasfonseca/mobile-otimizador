@@ -5,6 +5,8 @@ import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
 import { getEmpresas } from '../../api/EmpresaService';
 import { ScrollView } from 'react-native-gesture-handler';
+import { deleteEmpresa } from '../../api/EmpresaService';
+import { Alert } from 'react-native';
 
 export default function Empresa({ navigation, route }) {
 
@@ -48,6 +50,35 @@ export default function Empresa({ navigation, route }) {
     setVisibleActivityIndicator(false)
   }
 
+  const confirmToDeleteCompany = async (u) => {
+    Alert.alert(
+      "Exclusão",
+      "Confima exclusão da empresa " + u.id_empresa + ' ?',
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => deleteCompany(u.id_empresa) }
+      ]
+    );
+  }
+
+  const deleteCompany = async(id) => {
+    setVisibleActivityIndicator(true)
+    await deleteEmpresa(id)
+    .then(async res => {
+      console.log(res)
+      ToastAndroid.show(`Empresa ${id} excluída com sucesso!`, ToastAndroid.LONG)
+      await getApi()
+    })
+    .catch(err => {
+      ToastAndroid.show(`Erro de exclusão! ${JSON.stringify(err)}`, ToastAndroid.LONG)
+    })
+    setVisibleActivityIndicator(false)
+  }
+  
+
   const elements = []
   const toRenderItems = async () => {
     for (let i = 0; i < companies.length; i++) {
@@ -56,11 +87,11 @@ export default function Empresa({ navigation, route }) {
   }
   toRenderItems()
 
-  function renderDataItem(item, index) {
+  function renderDataItem(emp, index) {
     return (
       <DataTable.Row key={index}>
-        <DataTable.Cell numeric style={styles.cellId}>{item.id_empresa}</DataTable.Cell>
-        <DataTable.Cell style={styles.cellNome}>{item.nome}</DataTable.Cell>
+        <DataTable.Cell numeric style={styles.cellId}>{emp.id_empresa}</DataTable.Cell>
+        <DataTable.Cell style={styles.cellNome}>{emp.nome}</DataTable.Cell>
         <DataTable.Cell style={styles.cellAcao}>
           <View style={styles.viewButtonEdit}>
             <Button
@@ -70,7 +101,7 @@ export default function Empresa({ navigation, route }) {
               style={styles.buttonEdit}
               labelStyle={{ fontSize: 30 }}
               color="#2C3E50"
-              onPress={() => navigation.navigate('EmpresaForm', { empresa: item })} />
+              onPress={() => navigation.navigate('EmpresaForm', { empresa: emp })} />
           </View>
           <View style={styles.viewButtonDelete}>
             <Button
@@ -80,7 +111,7 @@ export default function Empresa({ navigation, route }) {
               style={styles.buttonDelete}
               labelStyle={{ fontSize: 30 }}
               color="#943126"
-              onPress={() => showToast('Delete')} />
+              onPress={() => confirmToDeleteCompany(emp)} />
           </View>
         </DataTable.Cell>
       </DataTable.Row>
