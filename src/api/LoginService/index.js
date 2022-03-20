@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import http from '../';
 
 export const serviceLogin = async (login, password) => {
@@ -9,7 +10,8 @@ export const serviceLogin = async (login, password) => {
                 password: password
             }
         ).then((resp) => {
-            return resp.data
+            if (resp && resp.data)
+                return resp.data
         })
             .catch(err => {
                 throw err
@@ -24,6 +26,7 @@ export const serviceLogout = async () => {
         const baseURL = http.defaults.baseURL
         return await http.get(baseURL + 'auth/logout')
             .then((resp) => {
+                AsyncStorage.removeItem('TOKEN')
                 return resp.data
             })
             .catch(err => {

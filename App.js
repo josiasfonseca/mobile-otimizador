@@ -16,7 +16,7 @@ import { DrawerComponent } from './src/components/DrawerComponent';
 const Drawer = createDrawerNavigator();
 
 export default function App() {
-   
+
   const screensOptions = {
     headerTitleAlign: 'center',
     headerBackTitleVisible: false,
@@ -27,13 +27,14 @@ export default function App() {
     drawerStatusBarAnimation: 'fade'
   }
   return (
+
     <NavigationContainer >
-      <Drawer.Navigator
-        drawerContent={props => <DrawerComponent {...props} />}
-        initialRouteName="Usuario"
-        screenOptions={screensOptions}
-        backBehavior='history'
-      >
+        <Drawer.Navigator
+          drawerContent={props => <DrawerComponent {...props} />}
+          initialRouteName="Login"
+          screenOptions={screensOptions}
+          backBehavior='history'
+        >
           <Drawer.Screen
             name="Login"
             component={Login}
@@ -45,7 +46,7 @@ export default function App() {
           <Drawer.Screen name="UsuarioForm" component={UsuarioForm} options={{ title: 'Usuario' }} />
           <Drawer.Screen name="Empresa" component={Empresa} />
           <Drawer.Screen name="EmpresaForm" component={EmpresaForm} options={{ title: 'Edição de Empresa' }} />
-      </Drawer.Navigator>
+        </Drawer.Navigator>
     </NavigationContainer>
   );
 }

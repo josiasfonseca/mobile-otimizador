@@ -37,6 +37,7 @@ http.interceptors.response.use(
     return response
   },
   async function (error) {
+    console.log(error.response)
     const originalRequest = (await error) && error.config ? error.config : null
     const errorStatus = error && error.response ? error.response.status : null
     const errorText = error && error.response ? error.response.data.errors : null
@@ -45,11 +46,13 @@ http.interceptors.response.use(
     }
     const urlLogout =
       error && error.config ? error.config.baseURL + 'auth/logout' : ''
+    const urlLogin =
+      error && error.config ? error.config.baseURL + 'auth/login' : ''
     /*
      * Quando a requisição tem status 401 e statusText,
      * será gerado uma nova requisição para gerar um novo token automaticamente
      */
-    if (errorStatus === 401 && originalRequest.url != urlLogout) {
+    if (errorStatus === 401 && originalRequest.url != urlLogout && originalRequest.url != urlLogin) {
       const baseURL = http.defaults.baseURL
       return await http.get(baseURL + 'auth/logout')
         .then((resp) => {

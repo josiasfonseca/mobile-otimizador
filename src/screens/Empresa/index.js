@@ -6,12 +6,12 @@ import styles from './styles'
 import { getEmpresas } from '../../api/EmpresaService';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export default function Empresa({ navigation }) {
+export default function Empresa({ navigation, route }) {
 
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.LONG);
   };
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [itemsPerPage, setitemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [searching, setSearching] = useState(false)
@@ -21,6 +21,12 @@ export default function Empresa({ navigation }) {
   useEffect(async () => {
     await getApi()
   }, []);
+
+  useEffect(async () => {
+    if (route.params && route.params.atualizar && route.params.atualizar == 'S')
+      await getApi()
+  }, [route.params]);
+
 
   useEffect(async () => {
     await getApi()
@@ -34,9 +40,9 @@ export default function Empresa({ navigation }) {
   const getApi = async () => {
     setSearching(true)
     setVisibleActivityIndicator(true)
-    const result = await getEmpresas(page)
+    const result = await getEmpresas(page + 1)
     setitemsPerPage(result.per_page)
-    setTotalPages(result.last_page)
+    setTotalPages(result.last_page - 1)
     setCompanies(result.data)
     setSearching(false)
     setVisibleActivityIndicator(false)
@@ -64,7 +70,7 @@ export default function Empresa({ navigation }) {
               style={styles.buttonEdit}
               labelStyle={{ fontSize: 30 }}
               color="#2C3E50"
-              onPress={() => navigation.navigate('EmpresaEdit')} />
+              onPress={() => navigation.navigate('EmpresaForm', { empresa: item })} />
           </View>
           <View style={styles.viewButtonDelete}>
             <Button
@@ -100,10 +106,11 @@ export default function Empresa({ navigation }) {
           page={page}
           numberOfPages={totalPages + 1}
           onPageChange={(page) => updatePage(page)}
-          label={page + " de " + totalPages}
+          label={(page + 1) + " de " + (totalPages + 1)}
           optionsPerPage={itemsPerPage}
           itemsPerPage={itemsPerPage}
-          optionsLabel={'Por página'}
+          numberOfItemsPerPage={15}
+          onItemsPerPageChange={(n) => console.log(n)}
           showFastPaginationControls
         />
       </DataTable>

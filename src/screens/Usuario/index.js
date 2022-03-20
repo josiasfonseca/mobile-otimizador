@@ -6,7 +6,7 @@ import styles from './styles'
 import { getUsuarios } from '../../api/UsuarioService';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export default function Usuario({ navigation }) {
+export default function Usuario({ navigation, route }) {
 
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.LONG);
@@ -35,12 +35,16 @@ export default function Usuario({ navigation }) {
       setPage(page)
   }
 
+  useEffect(async () => {
+    if (route.params && route.params.atualizar && route.params.atualizar == 'S')
+      await getApi()
+  }, [route.params]);
+
   const getApi = async () => {
     setSearching(true)
     setVisibleActivityIndicator(true)
     const result = await getUsuarios(page + 1)
     setitemsPerPage(result.per_page)
-    console.log('TOTAL PAGES: ' , result.last_page)
     setTotalPages(result.last_page - 1)
     setUsers(result.data)
     setSearching(false)

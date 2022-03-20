@@ -33,11 +33,20 @@ export const getEmpresa = async (id) => {
             console.log(e)
     }
 }
+const removeCaracteres = (value) => {
+    return value.replace(/[^0-9]/g, '')
+}
 
 export const insertEmpresa = async (empresa) => {
     try {
+        const emp = ({...empresa, cnpj: removeCaracteres(empresa.cnpj), 
+            telefone: removeCaracteres(empresa.telefone), 
+            whatsapp: removeCaracteres(empresa.whatsapp), 
+            cep: removeCaracteres(empresa.cep) 
+        })
+
         const baseURL = http.defaults.baseURL
-        return await http.post(baseURL + 'empresas/', empresa)
+        return await http.post(baseURL + 'empresas/', emp)
         .then((resp) => {
             return resp
         })

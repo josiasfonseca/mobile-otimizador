@@ -54,6 +54,7 @@ export default function Login({ navigation, route }) {
   }
 
   async function auth() {
+    console.log(user, password)
     if (realizandoLogin) {
       showToast('Realizando login. Aguarde!')
       return

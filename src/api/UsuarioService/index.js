@@ -36,16 +36,18 @@ export const getUsuario = async (id) => {
 const removeCaracteres = (value) => {
     return value.replace(/[^0-9]/g, '')
 }
+
+const removeCaracteresLogin = (value) => {
+    console.log(value)
+    return value.replace(/[^a-zA-z]/g, '')
+}
 export const insertUsuario = async (usuario) => {
     try {
-        console.log(usuario)
-        console.log('SALVAR')
-        // const fields = ['cpf', 'telefone', 'whatsapp', 'cep', 'login']
         const usu = ({...usuario, cpf: removeCaracteres(usuario.cpf), 
                                   telefone: removeCaracteres(usuario.telefone), 
                                   whatsapp: removeCaracteres(usuario.whatsapp), 
                                   cep: removeCaracteres(usuario.cep), 
-                                  login: removeCaracteres(usuario.login)})
+                                  login: removeCaracteresLogin(usuario.login.toLowerCase())})
         const baseURL = http.defaults.baseURL
         return await http.post(baseURL + 'usuarios/', usu)
             .then((resp) => {

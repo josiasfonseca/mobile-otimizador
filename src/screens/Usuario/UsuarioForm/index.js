@@ -58,14 +58,6 @@ export default function UsuarioForm({ navigation, route }) {
   }
 
   useEffect(async () => {
-    ToastAndroid.show(message, ToastAndroid.LONG)
-    if (retorno == 200) {
-      setUser({ ...usuario })
-      navigation.navigate('Usuario')
-    }
-  }, [retorno])
-
-  useEffect(async () => {
     setVisibleActivityIndicator(true)
     setUser({ ...usuario })
     const usuario_id = route.params
@@ -111,16 +103,19 @@ export default function UsuarioForm({ navigation, route }) {
       ToastAndroid.show('Verifique os campos em vermelho.', ToastAndroid.LONG)
       return
     }
+    if (user.tipo_usuario)
+      delete user.tipo_usuario
 
     if (!user.id_usuario || user.id_usuario == '') {
       setVisibleActivityIndicator(true)
-      if (user.tipo_usuario)
-        delete user.tipo_usuario
       setUser({ ...user, id_usuario: '' })
       await insertUsuario(user)
         .then(res => {
-          setMessage('Cadastro efetuado com sucesso!')
-          setRetorno(res)
+          ToastAndroid.show('Cadastro efetuado com sucesso!', ToastAndroid.LONG)
+          setRetorno(res.status)
+          setUser({ ...usuario })
+          setVisibleActivityIndicator(false)
+          navigation.navigate('Usuario', { atualizar: 'S'})
         })
         .catch(err => {
           setMessage(JSON.stringify(err.message ?? err))
@@ -133,19 +128,18 @@ export default function UsuarioForm({ navigation, route }) {
       setUser({ ...user, updated_at: '', created_at: '' })
       await updateUsuario(user.id_usuario, user)
         .then(res => {
-          setMessage('Cadastro atualizado com sucesso!')
+          ToastAndroid.show('Cadastro atualizado com sucesso!', ToastAndroid.LONG)
           setRetorno(res)
+          setUser({ ...usuario })
+          setVisibleActivityIndicator(false)
+          navigation.navigate('Usuario', { atualizar: 'S'})
+
         })
         .catch(err => {
           setMessage(JSON.stringify(err.message ?? err))
         })
 
-    }
-    setVisibleActivityIndicator(false)
-    ToastAndroid.show(message, ToastAndroid.LONG)
-    if (retorno == 200) {
-      setUser({ ...usuario })
-      navigation.navigate('Usuario')
+      setVisibleActivityIndicator(false)
     }
   }
   return (
@@ -193,6 +187,8 @@ export default function UsuarioForm({ navigation, route }) {
               dense
               activeOutlineColor="#0e0e0e"
               placeholderTextColor="#cccccc"
+              maxLength={20}
+              minLength={6}
               label="Login"
               mode="outlined"
               value={user.login ? user.login.toString() : ''}
@@ -222,7 +218,7 @@ export default function UsuarioForm({ navigation, route }) {
               <Text>
                 {user.senha.length < 6 &&
                   <HelperText type="error" visible={user.senha.length < 6}>
-                   {user.senha.length < 1 && ' Senha é obrigatório ' } {user.senha.length < 6 && ' Min. 6 caracteres' }
+                    {user.senha.length < 1 && ' Senha é obrigatório '} {user.senha.length < 6 && ' Min. 6 caracteres'}
                   </HelperText>}
               </Text>}
           </View>

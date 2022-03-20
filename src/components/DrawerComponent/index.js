@@ -25,8 +25,9 @@ import styles from './styles'
 export function DrawerComponent(props) {
 
     useEffect(async () => {
+        // console.log('PEGOU TOKEN', props)
         await getDadosToken()
-    },[]);
+    },[userData]);
 
     // const paperTheme = useTheme();
     // const { signOut, toggleTheme } = React.useContext(AuthContext);
