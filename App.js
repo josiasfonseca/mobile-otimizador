@@ -3,6 +3,7 @@ import 'react-native-gesture-handler';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Controle from './src/screens/Controle'
+import ControleForm from './src/screens/Controle/ControleForm'
 import Login from './src/screens/Login'
 import Home from './src/screens/Home'
 import Importador from './src/screens/Importador'
@@ -31,7 +32,7 @@ export default function App() {
     <NavigationContainer >
         <Drawer.Navigator
           drawerContent={props => <DrawerComponent {...props} />}
-          initialRouteName="Login"
+          initialRouteName="Home"
           screenOptions={screensOptions}
           backBehavior='history'
         >
@@ -41,6 +42,7 @@ export default function App() {
             options={{ headerShown: false, gestureEnabled: false, swipeEnabled: false }} />
           <Drawer.Screen name="Home" component={Home} options={{ title: 'Operações' }} />
           <Drawer.Screen name="Controle" component={Controle} />
+          <Drawer.Screen name="ControleForm" component={ControleForm} />
           <Drawer.Screen name="Importador" component={Importador} />
           <Drawer.Screen name="Usuario" component={Usuario} />
           <Drawer.Screen name="UsuarioForm" component={UsuarioForm} options={{ title: 'Usuario' }} />

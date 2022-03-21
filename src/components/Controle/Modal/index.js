@@ -28,10 +28,11 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
     }
 
     function onConfirm() {
+        console.log('ITEM SELECTED: ',itemSelected, dados)
         if (itemSelected.length == 0)
-            Alert.alert("Selecione uma opção!")
-        else
-            setModal(false)
+            ToastAndroid.show("Selecione uma opção!", ToastAndroid.LONG)
+        // else
+        //     setModal(false)
     }
 
     return (
@@ -70,7 +71,7 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
                                     // labelStyle={{ fontSize: 15}}
                                     mode="contained"
                                     color="#B22222"
-                                    onPress={() => ToastAndroid.show('Cancelar', ToastAndroid.LONG)}>
+                                    onPress={() => onCancel()}>
                                     Cancelar
                                 </Button>
                             </View>
@@ -81,7 +82,7 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
                                     // labelStyle={{ fontSize: 15 }}
                                     mode="contained"
                                     color="#3CB371"
-                                    onPress={() => ToastAndroid.show('Salvar', ToastAndroid.LONG)}>
+                                    onPress={() => onConfirm()}>
                                     Salvar
                                 </Button>
                             </View>

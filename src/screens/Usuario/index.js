@@ -10,11 +10,6 @@ import { Alert } from 'react-native';
 
 export default function Usuario({ navigation, route }) {
 
-  function showToast(message) {
-    ToastAndroid.show(message, ToastAndroid.LONG);
-  };
-
-
   const [page, setPage] = useState(0);
   const [itemsPerPage, setitemsPerPage] = useState(15);
   const [totalPages, setTotalPages] = useState(1);

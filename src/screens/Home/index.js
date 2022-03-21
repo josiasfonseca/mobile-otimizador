@@ -17,67 +17,67 @@ export default function Home({ navigation }) {
 
     const companies = [
         {
-            id: '1',
+            id_empresa: '1',
             email: 'joao@ifpr.edu.br',
             nome: 'ROMAGUERA-CORKERY',
         },
         {
-            id: '2',
+            id_empresa: '2',
             email: 'GREENFELDER-CARTWRIGHT',
             nome: 'GREENFELDER-CARTWRIGHT',
         },
         {
-            id: '3',
+            id_empresa: '3',
             email: 'joana@ifpr.edu.br',
             nome: 'HILPERT-MAGGIO',
         },
         {
-            id: '4',
+            id_empresa: '4',
             email: 'joana@ifpr.edu.br',
             nome: 'TORP GROUP',
         },
         {
-            id: '5',
+            id_empresa: '5',
             email: 'joana@ifpr.edu.br',
             nome: 'MORAR, KOHLER AND CRUICKSHANK',
         },
         {
-            id: '6',
+            id_empresa: '6',
             email: 'joana@ifpr.edu.br',
             nome: 'HAMMES-DECKOW',
         },
         {
-            id: '7',
+            id_empresa: '7',
             email: 'joana@ifpr.edu.br',
             nome: 'DOYLE-JOHNSTON',
         },
         {
-            id: '8',
+            id_empresa: '8',
             email: 'joana@ifpr.edu.br',
             nome: 'LABADIE, CRUICKSHANK AND HOWE',
         },
         {
-            id: '9',
+            id_empresa: '9',
             email: 'joana@ifpr.edu.br',
             nome: 'BLANDA-MACEJKOVIC',
         },
         {
-            id: '10',
+            id_empresa: '10',
             email: 'joana@ifpr.edu.br',
             nome: 'BERNHARD INC',
         },
         {
-            id: '11',
+            id_empresa: '11',
             email: 'joana@ifpr.edu.br',
             nome: 'DARE-GAYLORD3',
         },
         {
-            id: '12',
+            id_empresa: '12',
             email: 'joana@ifpr.edu.br',
             nome: 'KULAS-MCDERMOTT',
         },
         {
-            id: '13',
+            id_empresa: '13',
             email: 'joana@ifpr.edu.br',
             nome: 'ZIEMANN-ZBONCAK',
         },
@@ -89,11 +89,11 @@ export default function Home({ navigation }) {
         elements.push(companies[i])
     }
 
-    function renderDataItem(item, index) {
+    function renderDataItem(empresa, index) {
         return (
             <DataTable.Row key={index}>
-                <DataTable.Cell numeric style={styles.cellId}>{item.id}</DataTable.Cell>
-                <DataTable.Cell style={styles.cellNome}>{item.nome}</DataTable.Cell>
+                <DataTable.Cell numeric style={styles.cellId}>{empresa.id_empresa}</DataTable.Cell>
+                <DataTable.Cell style={styles.cellNome}>{empresa.nome}</DataTable.Cell>
                 <DataTable.Cell style={styles.cellAcao}>
                     <View>
                         <Button
@@ -103,7 +103,7 @@ export default function Home({ navigation }) {
                             icon="playlist-check"
                             labelStyle={{ fontSize: 30 }}
                             color="#2C3E50"
-                            onPress={() => navigation.navigate('Controle')} >
+                            onPress={() => navigation.navigate('Controle', { controle: empresa})} >
                         </Button>
                     </View>
                     <View>
@@ -111,10 +111,10 @@ export default function Home({ navigation }) {
                             mode="text"
                             compact={true}
                             uppercase={false}
-                            icon="database-import"
+                            icon="file-import"
                             labelStyle={{ fontSize: 30 }}
                             color="#943126"
-                            onPress={() => navigation.navigate('Importador')} >
+                            onPress={() => navigation.navigate('Importador',  { controle: empresa})} >
                         </Button>
                     </View>
                 </DataTable.Cell>

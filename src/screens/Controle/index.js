@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -10,25 +10,23 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { FlatList } from 'react-native';
 import styles from './styles'
 import ModalControle from '../../components/Controle/Modal';
-import { useState } from 'react';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Button, DataTable } from 'react-native-paper';
+import { getControles } from '../../api/ControleService';
 
-export default function Controle({ navigation }) {
+export default function Controle({ navigation, route }) {
 
     const [visibleModal, setVisibleModal] = useState(false)
     const [itemSelected, setItemSelected] = useState({})
     const [anoSelected, setAnoSelected] = useState([])
 
-    const optionsPerPage = [2, 3, 4];
-
-    const [page, setPage] = React.useState(0);
-    const [itemsPerPage, setItemsPerPage] = React.useState(optionsPerPage[0]);
-
-    useEffect(() => {
-        setPage(0);
-    }, [itemsPerPage]);
+    const [page, setPage] = useState(0);
+    const [itemsPerPage, setitemsPerPage] = useState(15);
+    const [totalPages, setTotalPages] = useState(1);
+    const [searching, setSearching] = useState(false)
+    const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
+    const [controls, setControls] = useState([])
 
 
     function updateModal(item, value) {
@@ -36,97 +34,74 @@ export default function Controle({ navigation }) {
         setItemSelected(item)
     }
 
-    const onSelectedAnoChange = (selectedItem) => {
-        setAnoSelected(selectedItem)
-    };
+    useEffect(async () => {
+        await getApi()
+    }, []);
 
-    onSelectedItemsChange = (selectedItem) => {
-        setSelected(selectedItem)
-    };
-    const DATA = [
-        {
-            id: '1',
-            mes: 'Janeiro',
-            status: '',
-        },
-        {
-            id: '2',
-            mes: 'Fevereiro',
-            status: 1,
-        },
-        {
-            id: '3',
-            mes: 'Março',
-            status: 0,
-        },
-        {
-            id: '4',
-            mes: 'Abril',
-            status: '',
-        },
-        {
-            id: '5',
-            mes: 'Maio',
-            status: 1,
-        },
-        {
-            id: '6',
-            mes: 'Junho',
-            status: 1,
-        },
-        {
-            id: '7',
-            mes: 'Julho',
-            status: 1,
-        },
-        {
-            id: '8',
-            mes: 'Agosto',
-            status: 1,
-        },
-        {
-            id: '9',
-            mes: 'Setembro',
-            status: 0,
-        },
-        {
-            id: '10',
-            mes: 'Outubro',
-            status: 0,
-        },
-        {
-            id: '11',
-            mes: 'Novembro',
-            status: '',
-        },
-        {
-            id: '12',
-            mes: 'Dezembro',
-            status: 1,
-        },
-    ];
+    useEffect(async () => {
+        await getApi()
+    }, [page])
 
-    const anos = [
-        {
-            name: "Opções",
-            id: 0,
-            children: [
-                { id: 1, name: '2010' }, { id: 2, name: '2011' }, { id: 3, name: '2012' }
-            ]
+    useEffect(async () => {
+        console.log('AQUI CONTROLE', route.params)
+        if (route.params && route.params.controle && route.params.controle) {
+            await getApi()
+            navigation.setOptions({ title: 'Controles Empresa ID: ' + route.params.controle.id_empresa })
         }
-    ]
+    }, [route.params]);
 
-    const elements = []
-    for (let i = 0; i < DATA.length; i++) {
-        elements.push(DATA[i])
+    const updatePage = async (page) => {
+        console.log(page)
+        if (!searching)
+            setPage(page)
     }
 
-    function renderDataItem(item, index) {
+    const getApi = async () => {
+        setSearching(true)
+        setVisibleActivityIndicator(true)
+        const result = await getControles(route.params.controle, page + 1)
+        setitemsPerPage(result.per_page)
+        setTotalPages(result.last_page - 1)
+        setControls(result.data)
+        setSearching(false)
+        setVisibleActivityIndicator(false)
+    }
+
+    const elements = []
+    const toRenderItems = async () => {
+        for (let i = 0; i < controls.length; i++) {
+            elements.push(controls[i])
+        }
+    }
+    toRenderItems()
+
+    function renderDataItem(controle, index) {
         return (
-            <DataTable.Row style={item.status == 1 ? styles.item : styles.itemError} key={index} onPress={() => updateModal(item, true)}>
-                <DataTable.Cell numeric style={styles.cellId}>{item.id}</DataTable.Cell>
-                <DataTable.Cell style={styles.cellNome}>{item.mes}</DataTable.Cell>
-                <DataTable.Cell style={styles.cellAcao}>{item.status == 1 ? 'OK' : 'Erro'}</DataTable.Cell>
+            <DataTable.Row style={controle.status == 1 ? styles.item : styles.itemError} key={index} onPress={() => updateModal(item, true)}>
+                <DataTable.Cell numeric style={styles.cellId}>{controle.id_controle}</DataTable.Cell>
+                <DataTable.Cell style={styles.cellNome}>{controle.ano}</DataTable.Cell>
+                <DataTable.Cell style={styles.cellAcao}>
+                    <View style={styles.viewButtonEdit}>
+                        <Button
+                            mode="text"
+                            compact={true}
+                            icon="pencil"
+                            style={styles.buttonEdit}
+                            labelStyle={{ fontSize: 30 }}
+                            color="#2C3E50"
+                            onPress={() => navigation.navigate('ControleForm', { controle: controle })} />
+                    </View>
+                    <View style={styles.viewButtonDelete}>
+                        <Button
+                            mode="text"
+                            compact={true}
+                            icon="trash-can-outline"
+                            style={styles.buttonDelete}
+                            labelStyle={{ fontSize: 30 }}
+                            color="#943126"
+                            onPress={() => confirmToDeleteControle(controle)} />
+                    </View>
+                </DataTable.Cell>
             </DataTable.Row>
         )
     }
@@ -135,53 +110,53 @@ export default function Controle({ navigation }) {
         //   <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
 
         <View style={styles.container}>
-                <View style={styles.viewReferencia}>
-                    <View style={styles.viewTextReferencia}>
-                        <Text style={styles.textReferencia}>Ano Referencia: </Text>
-                    </View>
-
-                    <View style={styles.viewSelect}>
-                        <SectionedMultiSelect
-                            items={anos}
-                            IconRenderer={Icon}
-                            uniqueKey="id"
-                            subKey="children"
-                            selectText="Ano"
-                            showDropDowns={true}
-                            readOnlyHeadings={true}
-                            onSelectedItemsChange={e => onSelectedAnoChange(e)}
-                            selectedItems={anoSelected}
-                            showCancelButton
-                            single
-                            searchPlaceholderText="Ano"
-                            confirmText="Confirmar"
-                        />
-                    </View>
+            {/* <View style={styles.viewReferencia}>
+                <View style={styles.viewTextReferencia}>
+                    <Text style={styles.textReferencia}>Ano Referencia: </Text>
                 </View>
-            {/* <View style={styles.container}> */}
-                <DataTable>
-                    <DataTable.Header>
-                        <DataTable.Title numeric style={styles.titleId}>ID</DataTable.Title>
-                        <DataTable.Title style={styles.titleNome}>Nome</DataTable.Title>
-                        <DataTable.Title style={styles.titleAcao}>Ação</DataTable.Title>
-                    </DataTable.Header>
 
-                    <View>
-                        {elements.map((item, index) => renderDataItem(item, index))}
-                    </View>
-
-                    <DataTable.Pagination
-                        page={page}
-                        numberOfPages={3}
-                        onPageChange={(page) => setPage(page)}
-                        label="1-2 of 6"
-                        optionsPerPage={optionsPerPage}
-                        itemsPerPage={itemsPerPage}
-                        setItemsPerPage={setItemsPerPage}
-                        showFastPagination
-                        optionsLabel={'Rows per page'}
+                <View style={styles.viewSelect}>
+                    <SectionedMultiSelect
+                        items={anos}
+                        IconRenderer={Icon}
+                        uniqueKey="id"
+                        subKey="children"
+                        selectText="Ano"
+                        showDropDowns={true}
+                        readOnlyHeadings={true}
+                        onSelectedItemsChange={e => onSelectedAnoChange(e)}
+                        selectedItems={anoSelected}
+                        showCancelButton
+                        single
+                        searchPlaceholderText="Ano"
+                        confirmText="Confirmar"
                     />
-                </DataTable>
+                </View>
+            </View> */}
+            {/* <View style={styles.container}> */}
+            <DataTable>
+                <DataTable.Header>
+                    <DataTable.Title numeric style={styles.titleId}>ID</DataTable.Title>
+                    <DataTable.Title style={styles.titleNome}>Nome</DataTable.Title>
+                    <DataTable.Title style={styles.titleAcao}>Ação</DataTable.Title>
+                </DataTable.Header>
+
+                <View>
+                    {elements.map((item, index) => renderDataItem(item, index))}
+                </View>
+
+                <DataTable.Pagination
+                    page={page}
+                    numberOfPages={totalPages + 1}
+                    onPageChange={(page) => updatePage(page)}
+                    label={(page + 1) + " de " + (totalPages + 1)}
+                    optionsPerPage={itemsPerPage}
+                    itemsPerPage={itemsPerPage}
+                    numberOfItemsPerPage={15}
+                    onItemsPerPageChange={(n) => console.log(n)}
+                    showFastPaginationControls
+                />
+            </DataTable>
             {/* </View> */}
 
             <ModalControle setModal={setVisibleModal} visibleModal={visibleModal} dados={itemSelected}></ModalControle>
