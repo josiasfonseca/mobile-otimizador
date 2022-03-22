@@ -70,7 +70,7 @@ export default function ControleForm({ navigation, route }) {
 
     const validaCampos = async () => {
         setErrors(false)
-        if (control.ano.length < 1)
+        if (control.ano.length < 1 || control.ano > new Date().getFullYear() || control.ano < new Date().getFullYear() - 10 )
             setErrors(true)
     }
 
@@ -121,7 +121,7 @@ export default function ControleForm({ navigation, route }) {
             setControl({ ...route.params.controle })
         } else {
             navigation.setOptions({ title: 'Inclusão de Controle' })
-            setControl({ ...control })
+            setControl({ ...controle })
         }
         setVisibleActivityIndicator(false)
         console.log(control)
@@ -134,6 +134,9 @@ export default function ControleForm({ navigation, route }) {
             return
         }
 
+        delete control.created_at
+        delete control.deleted_at
+        delete control.updated_at
         if (!control.id_controle || control.id_controle == '') {
             setVisibleActivityIndicator(true)
             setControl({ ...control, id_controle: '' })
@@ -150,9 +153,6 @@ export default function ControleForm({ navigation, route }) {
                 })
 
         } else {
-            delete control.created_at
-            delete control.deleted_at
-            delete control.updated_at
             await updateControle(control.id_controle, control)
                 .then(res => {
                     ToastAndroid.show('Cadastro atualizado com sucesso!', ToastAndroid.LONG)
@@ -197,15 +197,15 @@ export default function ControleForm({ navigation, route }) {
                             mode="outlined"
                             keyboardType='numeric'
                             maxLength={4}
-                            disabled={true}
+                            editable={control && control.id_controle && control.id_controle == null ? false : true}
                             minLength={4}
                             value={control.ano ? control.ano.toString() : ''}
                             onChangeText={(text) => onChangeValueInput('ano', text)}
                         />
 
-                        {control.ano.length < 4 &&
-                            <HelperText type="error" visible={control.ano.length < 4}>
-                                Ano é obrigatório
+                        {errors &&
+                            <HelperText type="error" visible={errors}>
+                                {!control.ano ? 'Ano é obrigatório' : 'Ano inválido'}
                             </HelperText>}
                     </View>
                     <View style={styles.inputSelect}>
