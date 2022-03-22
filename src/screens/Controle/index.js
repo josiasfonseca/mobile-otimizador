@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
     View,
-    Text,
-    TouchableOpacity,
-    TextInput,
-    Alert,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { FlatList } from 'react-native';
 import styles from './styles'
-import ModalControle from '../../components/Controle/Modal';
-import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { Button, DataTable } from 'react-native-paper';
+import { ActivityIndicator, Button, DataTable, FAB, Portal, Provider } from 'react-native-paper';
 import { getControles } from '../../api/ControleService';
 
 export default function Controle({ navigation, route }) {
@@ -43,15 +34,18 @@ export default function Controle({ navigation, route }) {
     }, [page])
 
     useEffect(async () => {
-        console.log('AQUI CONTROLE', route.params)
         if (route.params && route.params.controle && route.params.controle) {
             await getApi()
             navigation.setOptions({ title: 'Controles Empresa ID: ' + route.params.controle.id_empresa })
         }
     }, [route.params]);
 
+    useEffect(async () => {
+        if (route.params && route.params.atualizar && route.params.atualizar == 'S')
+          await getApi()
+      }, [route.params]);
+
     const updatePage = async (page) => {
-        console.log(page)
         if (!searching)
             setPage(page)
     }
@@ -157,9 +151,23 @@ export default function Controle({ navigation, route }) {
                     showFastPaginationControls
                 />
             </DataTable>
-            {/* </View> */}
-
-            <ModalControle setModal={setVisibleModal} visibleModal={visibleModal} dados={itemSelected}></ModalControle>
+            <Provider>
+                <Portal >
+                    <FAB
+                        style={styles.fab}
+                        open={false}
+                        icon='plus'
+                        color="#fff"
+                        onPress={() => navigation.navigate('ControleForm', { controle: {} })}
+                    />
+                </Portal>
+            </Provider>
+            {
+                visibleActivityIndicator &&
+                <View style={styles.loading}  >
+                    <ActivityIndicator color='#13B58C' />
+                </View>
+            }
         </View>
         // </SafeAreaView>
     )

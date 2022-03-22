@@ -5,12 +5,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     color: '#E5E5E5',
-    marginTop: StatusBar.currentHeight || 0,
   },
   titleId: {
-      justifyContent: 'flex-start',
-      marginLeft: 2,
-      flex: 0.3,
+    justifyContent: 'flex-start',
+    marginLeft: 2,
+    flex: 0.3,
   },
   titleNome: {
     alignContent: 'center',
@@ -38,9 +37,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    flex:1.1,
+    flex: 1.1,
     flexDirection: 'row',
-  }, 
+  },
   viewReferencia: {
     flexDirection: 'row',
     backgroundColor: '#ccc',
@@ -48,11 +47,11 @@ const styles = StyleSheet.create({
     height: 70,
     marginTop: 0,
     justifyContent: 'center',
-  },  
+  },
   viewTextReferencia: {
     justifyContent: 'center',
-    
-  },  
+
+  },
   textReferencia: {
     color: '#000',
     fontSize: 16,
@@ -64,6 +63,24 @@ const styles = StyleSheet.create({
     width: 120,
     padding: 0,
     justifyContent: 'center',
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    opacity: 0.7,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 10,
+    bottom: 80,
+    backgroundColor: '#13B58C'
   },
 })
 

@@ -13,6 +13,12 @@ const styles = StyleSheet.create({
         marginTop: 1,
         width: '90%',
       },
+      inputSelect: {
+        marginTop: 9,
+        marginLeft: 13,
+        padding: 0,
+        width: '90%',
+      },
       buttons: {
         flexDirection: 'row'
       },

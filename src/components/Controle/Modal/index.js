@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Modal, Text, Pressable, View } from "react-native";
 import styles from './styles'
-import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+// import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Button } from 'react-native-paper';
 import { ToastAndroid } from 'react-native';
@@ -47,7 +47,7 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
                     <View style={styles.modalView}>
                         <Text style={styles.modalText}>{dados["id"]} - Mês: {dados["mes"]}</Text>
                         <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
+                            {/* <SectionedMultiSelect
                                 items={status}
                                 IconRenderer={Icon}
                                 uniqueKey="id"
@@ -61,7 +61,7 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
                                 single
                                 searchPlaceholderText="Status"
                                 confirmText="Confirmar"
-                            />
+                            /> */}
                         </View>
                         <View style={styles.buttons}>
                             <View style={styles.viewButtonCancelar}>

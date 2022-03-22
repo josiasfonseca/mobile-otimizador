@@ -4,12 +4,9 @@ import http from '../';
 export const getControles = async (empresa, page) => {
     try {
         const baseURL = http.defaults.baseURL
-        console.log(empresa)
         const url = baseURL + 'controles/' + empresa.id_empresa + '?page=' + page
-        console.log(url)
         return await http.get(url)
             .then((resp) => {
-                console.log('rest', resp)
                 return resp.data
             })
             .catch(err => {
@@ -54,7 +51,7 @@ export const insertControle = async (controle) => {
 export const updateControle = async (id, controle) => {
     try {
         const baseURL = http.defaults.baseURL
-        return await http.put(baseURL + 'controles/' + id, usuario)
+        return await http.put(baseURL + 'controles/' + id, controle)
             .then((resp) => {
                 return resp
             })

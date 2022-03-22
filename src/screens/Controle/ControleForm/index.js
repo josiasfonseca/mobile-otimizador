@@ -11,11 +11,11 @@ import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
 import { Keyboard, Platform } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native';
-import { ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { TextInputMask } from 'react-native-masked-text';
+import { VirtualizedList } from 'react-native';
 import { insertControle, updateControle } from '../../../api/ControleService';
-import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import SelectBox from 'react-native-multi-selectbox'
+import { ScrollView } from 'react-native-gesture-handler';
+// import { LogBox } from 'react-native'
 
 export default function ControleForm({ navigation, route }) {
 
@@ -37,24 +37,31 @@ export default function ControleForm({ navigation, route }) {
         empresa_id: 1
     }
 
-    const opcoes = [
-        {
-            name: "Opções",
-            id: 0,
-            children: [
-                { id: 1, name: 'OK' }, { id: 2, name: 'Erro' }
-            ]
-        }
+    const meses = [
+        { nome: 'jan', label: 'JANEIRO' },
+        { nome: 'fev', label: 'FEVEREIRO' },
+        { nome: 'mar', label: 'MARÇO' },
+        { nome: 'abr', label: 'ABRIL' },
+        { nome: 'mai', label: 'MAIO' },
+        { nome: 'jun', label: 'JUNHO' },
+        { nome: 'jul', label: 'JULHO' },
+        { nome: 'ago', label: 'AGOSTO' },
+        { nome: 'set', label: 'SETEMBRO' },
+        { nome: 'out', label: 'OUTUBRO' },
+        { nome: 'nov', label: 'NOVEMBRO' },
+        { nome: 'dez', label: 'DEZEMBRO' },
     ]
+    const opcoes = [
+        { id: 1, item: 'OK' },
+        { id: 2, item: 'X' }
+    ]
+
 
     const [control, setControl] = useState(controle)
     const [retorno, setRetorno] = useState(null)
     const [message, setMessage] = useState('')
     const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
     const [errors, setErrors] = useState(false)
-    const [visibleModal, setVisibleModal] = useState(false)
-    const [itemSelected, setItemSelected] = useState({})
-    const [mesSelected, setMesSelected] = useState([])
 
     const onChangeValueInput = (key, value) => {
         setControl({ ...control, [key]: value })
@@ -67,18 +74,34 @@ export default function ControleForm({ navigation, route }) {
             setErrors(true)
     }
 
-    const onSelectedMesChange = (selectedItem, mes) => {
-        console.log('SELECTED ITEM: ',selectedItem[0],mes, opcoes[0].children[selectedItem[0] - 1])
-        const selectedOption = opcoes[0].children[selectedItem[0] - 1]
-        setControl({...control, [mes]: selectedOption.name})
-        // setMesSelected(selectedItem)
-        console.log(control)
-    };
-
-    function updateModal(item, value) {
-        setVisibleModal(value)
-        setItemSelected(item)
+    function onChange(value, mes) {
+        setControl({ ...control, [mes.nome]: value.item })
     }
+
+    function getValueSelect (value) {
+        const ret = opcoes.filter(e => e.item == control[value.nome])
+        return ret[0]
+    }
+    
+    const Item = ({ mes, index }) => (
+        <View style={{ width: '100%' }} key={index}>
+            <SelectBox
+                style={{ with: '100%' }}
+                label={mes.label}
+                options={opcoes}
+                value={ { ...getValueSelect(mes) } }
+                onChange={(e) => onChange(e, mes)}
+                hideInputFilter={true}
+                inputPlaceholder="Opção..."
+                labelStyle={{ fontSize: 15, marginLeft: 5 }}
+                containerStyle={{ backgroundColor: '#ccc', borderRadius: 10 }}
+                optionsLabelStyle={{ fontSize: 20, color: '#000', backgroundColor: '#eee' }}
+                selectedItemStyle={{ backgroundColor: '#ccc', fontSize: 15, color: getValueSelect(mes) && getValueSelect(mes).item == 'X' 
+                                                                                                ? 'red' 
+                                                                                                : '#020', marginLeft: 10 }}
+            />
+        </View>
+    );
 
     useEffect(async () => {
         validaCampos()
@@ -101,6 +124,7 @@ export default function ControleForm({ navigation, route }) {
             setControl({ ...control })
         }
         setVisibleActivityIndicator(false)
+        console.log(control)
     }, [route.params.controle])
 
     const salvar = async () => {
@@ -147,8 +171,9 @@ export default function ControleForm({ navigation, route }) {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false} >
                 <View style={styles.container}>
+                    {/* <Text> {getValueSelect(control.jan)} </Text> */}
                     <View style={styles.inputText}>
                         <TextInput
                             dense
@@ -183,281 +208,14 @@ export default function ControleForm({ navigation, route }) {
                                 Ano é obrigatório
                             </HelperText>}
                     </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e, 'jan')}
-                                // selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.viewSelectText}>
-                            <Text>JAN</Text>
-                        </View>
-                        <View style={styles.viewSelect}>
-                            <SectionedMultiSelect
-                                items={opcoes}
-                                IconRenderer={Icon}
-                                uniqueKey="id"
-                                subKey="children"
-                                selectText="Opcao"
-                                // showDropDowns={true}
-                                expandDropDowns
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={e => onSelectedMesChange(e)}
-                                selectedItems={mesSelected}
-                                showCancelButton
-                                single
-                                searchPlaceholderText="Mes"
-                                confirmText="Confirmar"
-                            />
-                        </View>
+                    <View style={styles.inputSelect}>
+                        <ScrollView horizontal={true} style={{ flexDirection: 'column' }} >
+                            <View style={{ width: '100%' }}>
+                                {
+                                    meses.map((mes, index) => <Item mes={mes} index={index} key={index} />)
+                                }
+                            </View>
+                        </ScrollView>
                     </View>
                     <View style={styles.buttons}>
                         <View style={styles.viewButtonCancelar}>
@@ -467,7 +225,7 @@ export default function ControleForm({ navigation, route }) {
                                 // labelStyle={{ fontSize: 15}}
                                 mode="contained"
                                 color="#B22222"
-                                onPress={() => ToastAndroid.show('Cancelar', ToastAndroid.LONG)}>
+                                onPress={() =>navigation.navigate('Controle', { atualizar: 'S' })}>
                                 Cancelar
                             </Button>
                         </View>
@@ -490,6 +248,6 @@ export default function ControleForm({ navigation, route }) {
                     }
                 </View>
             </ScrollView>
-        </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback >
     )
 }
