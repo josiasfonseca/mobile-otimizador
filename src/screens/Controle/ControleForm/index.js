@@ -7,7 +7,7 @@ import {
     TextInput
 } from 'react-native-paper';
 
-import { View, ToastAndroid } from 'react-native'
+import { View, ToastAndroid, Alert } from 'react-native'
 import styles from './styles'
 import { Keyboard, Platform } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native';
@@ -34,7 +34,7 @@ export default function ControleForm({ navigation, route }) {
         nov: '',
         dez: '',
         ano: '',
-        empresa_id: 1
+        empresa_id: 10
     }
 
     const meses = [
@@ -62,6 +62,7 @@ export default function ControleForm({ navigation, route }) {
     const [message, setMessage] = useState('')
     const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
     const [errors, setErrors] = useState(false)
+    const [empresa, setEmpresa] = useState({})
 
     const onChangeValueInput = (key, value) => {
         setControl({ ...control, [key]: value })
@@ -70,7 +71,7 @@ export default function ControleForm({ navigation, route }) {
 
     const validaCampos = async () => {
         setErrors(false)
-        if (control.ano.length < 1 || control.ano > new Date().getFullYear() || control.ano < new Date().getFullYear() - 10 )
+        if (control.ano.length < 1 || control.ano > new Date().getFullYear() || control.ano < (new Date().getFullYear() - 10))
             setErrors(true)
     }
 
@@ -78,27 +79,29 @@ export default function ControleForm({ navigation, route }) {
         setControl({ ...control, [mes.nome]: value.item })
     }
 
-    function getValueSelect (value) {
+    function getValueSelect(value) {
         const ret = opcoes.filter(e => e.item == control[value.nome])
         return ret[0]
     }
-    
+
     const Item = ({ mes, index }) => (
         <View style={{ width: '100%' }} key={index}>
             <SelectBox
                 style={{ with: '100%' }}
                 label={mes.label}
                 options={opcoes}
-                value={ { ...getValueSelect(mes) } }
+                value={{ ...getValueSelect(mes) }}
                 onChange={(e) => onChange(e, mes)}
                 hideInputFilter={true}
                 inputPlaceholder="Opção..."
                 labelStyle={{ fontSize: 15, marginLeft: 5 }}
                 containerStyle={{ backgroundColor: '#ccc', borderRadius: 10 }}
                 optionsLabelStyle={{ fontSize: 20, color: '#000', backgroundColor: '#eee' }}
-                selectedItemStyle={{ backgroundColor: '#ccc', fontSize: 15, color: getValueSelect(mes) && getValueSelect(mes).item == 'X' 
-                                                                                                ? 'red' 
-                                                                                                : '#020', marginLeft: 10 }}
+                selectedItemStyle={{
+                    backgroundColor: '#ccc', fontSize: 15, color: getValueSelect(mes) && getValueSelect(mes).item == 'X'
+                        ? 'red'
+                        : '#020', marginLeft: 10
+                }}
             />
         </View>
     );
@@ -115,17 +118,18 @@ export default function ControleForm({ navigation, route }) {
             && route.params.controle.id_controle
             ? route.params.controle.id_controle
             : null
-        console.log('CONTROL: ', control_id)
+        const codigoEmpresa = route.params.controle.empresa_id
+        Alert.alert("CODIGO EMPRESA: " + codigoEmpresa)
+        setEmpresa({ id_empresa: codigoEmpresa })
         if (control_id) {
-            navigation.setOptions({ title: 'Edição de Controle ID: ' + control_id })
+            navigation.setOptions({ title: 'Edição de Controle Emp: ' + codigoEmpresa })
             setControl({ ...route.params.controle })
         } else {
             navigation.setOptions({ title: 'Inclusão de Controle' })
             setControl({ ...controle })
         }
         setVisibleActivityIndicator(false)
-        console.log(control)
-    }, [route.params.controle])
+    }, [route.params])
 
     const salvar = async () => {
         await validaCampos()
@@ -133,20 +137,27 @@ export default function ControleForm({ navigation, route }) {
             ToastAndroid.show('Verifique os campos em vermelho.', ToastAndroid.LONG)
             return
         }
-
         delete control.created_at
         delete control.deleted_at
         delete control.updated_at
+        delete control.observacoes
+        delete control.empresa
+
+        setEmpresa({ id_empresa: route.params.controle.empresa_id })
         if (!control.id_controle || control.id_controle == '') {
             setVisibleActivityIndicator(true)
             setControl({ ...control, id_controle: '' })
+            if (!empresa) {
+                Alert.alert('SEM EMPRESA')
+            }
+            return
             await insertControle(control)
                 .then(res => {
                     ToastAndroid.show('Cadastro efetuado com sucesso!', ToastAndroid.LONG)
                     setRetorno(res.status)
                     setControl({ ...control })
                     setVisibleActivityIndicator(false)
-                    navigation.navigate('Controle', { atualizar: 'S' })
+                    navigation.navigate('Controle', { atualizar: 'S', empresa })
                 })
                 .catch(err => {
                     setMessage(JSON.stringify(err.message ?? err))
@@ -159,7 +170,7 @@ export default function ControleForm({ navigation, route }) {
                     setRetorno(res)
                     setControl({ ...control })
                     setVisibleActivityIndicator(false)
-                    navigation.navigate('Controle', { atualizar: 'S' })
+                    navigation.navigate('Controle', { atualizar: 'S', empresa })
                 })
                 .catch(err => {
                     setMessage(JSON.stringify(err.message ?? err))
@@ -201,6 +212,7 @@ export default function ControleForm({ navigation, route }) {
                             minLength={4}
                             value={control.ano ? control.ano.toString() : ''}
                             onChangeText={(text) => onChangeValueInput('ano', text)}
+                            onBlur={() => validaCampos()}
                         />
 
                         {errors &&
@@ -225,7 +237,7 @@ export default function ControleForm({ navigation, route }) {
                                 // labelStyle={{ fontSize: 15}}
                                 mode="contained"
                                 color="#B22222"
-                                onPress={() =>navigation.navigate('Controle', { atualizar: 'S' })}>
+                                onPress={() => navigation.goBack()}>
                                 Cancelar
                             </Button>
                         </View>

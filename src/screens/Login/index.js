@@ -54,7 +54,6 @@ export default function Login({ navigation, route }) {
   }
 
   async function auth() {
-    console.log(user, password)
     if (realizandoLogin) {
       showToast('Realizando login. Aguarde!')
       return
@@ -88,13 +87,15 @@ export default function Login({ navigation, route }) {
             showToast('Falha de autenticação!')
           }
         })
-        .catch(err => console.log('Error' + JSON.stringify(err)))
+        .catch(err => {
+          throw ('Error' + JSON.stringify(err))
+        })
         .finally(() => {
           setVisibleActivityIndicator(false)
           realizandoLogin = false
         })
     } catch (e) {
-      console.log(e)
+      throw e
     }
   }
 

@@ -6,14 +6,14 @@ export const getControles = async (empresa, page) => {
         const baseURL = http.defaults.baseURL
         const url = baseURL + 'controles/' + empresa.id_empresa + '?page=' + page
         return await http.get(url)
-            .then((resp) => {
+            .then((resp) => {   
                 return resp.data
             })
             .catch(err => {
                 throw err
             })
     } catch (e) {
-        console.log('ERR 22 ', e)
+        throw e
     }
 }
 
@@ -25,18 +25,18 @@ export const getControle = async (id) => {
                 return resp.data
             })
             .catch(err => {
-                console.log(err)
+                throw err
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 
 export const insertControle = async (controle) => {
     try {
         const baseURL = http.defaults.baseURL
-        return await http.post(baseURL + 'controles/', controle)
+        return await http.post(baseURL + 'controles/incluir', controle)
             .then((resp) => {
                 return resp
             })
@@ -44,7 +44,7 @@ export const insertControle = async (controle) => {
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 
@@ -61,7 +61,7 @@ export const updateControle = async (id, controle) => {
             })
     } catch (e) {
         ToastAndroid.show(JSON.stringify(e), ToastAndroid.LONG)
-        console.log(e)
+        throw e
     }
 }
 
@@ -78,6 +78,6 @@ export const deleteControle = async (id) => {
             })
     } catch (e) {
         ToastAndroid.show(JSON.stringify(e), ToastAndroid.LONG)
-        console.log(e)
+        throw e
     }
 }

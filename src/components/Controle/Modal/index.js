@@ -28,11 +28,8 @@ const ModalControle = ({ setModal, visibleModal, dados }) => {
     }
 
     function onConfirm() {
-        console.log('ITEM SELECTED: ',itemSelected, dados)
         if (itemSelected.length == 0)
             ToastAndroid.show("Selecione uma opção!", ToastAndroid.LONG)
-        // else
-        //     setModal(false)
     }
 
     return (

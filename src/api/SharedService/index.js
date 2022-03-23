@@ -13,7 +13,9 @@ export const getCep = async (cep) => {
       .then(res => {
           return res.data
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        throw err
+      })
   }
 
   
@@ -30,5 +32,7 @@ export const getCnpj = async (cnpj) => {
       .then(res => {
           return res.data
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        throw err
+      })
   }

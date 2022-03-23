@@ -27,13 +27,11 @@ export default function Usuario({ navigation, route }) {
   }, [page])
 
   const updatePage = async (page) => {
-    console.log(page)
     if (!searching)
       setPage(page)
   }
 
   useEffect(async () => {
-    console.log('AQUI USUER', route.params)
     if (route.params && route.params.atualizar && route.params.atualizar == 'S')
       await getApi()
   }, [route.params]);
@@ -67,7 +65,6 @@ export default function Usuario({ navigation, route }) {
     setVisibleActivityIndicator(true)
     await deleteUsuario(id)
     .then(async res => {
-      console.log(res)
       ToastAndroid.show(`Usuário ${id} excluído com sucesso!`, ToastAndroid.LONG)
       await getApi()
     })
@@ -141,7 +138,6 @@ export default function Usuario({ navigation, route }) {
           optionsPerPage={itemsPerPage}
           itemsPerPage={itemsPerPage}
           numberOfItemsPerPage={15}
-          onItemsPerPageChange={(n) => console.log(n)}
           showFastPaginationControls
         />
       </DataTable>

@@ -17,7 +17,7 @@ export const serviceLogin = async (login, password) => {
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 
@@ -33,7 +33,7 @@ export const serviceLogout = async () => {
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 

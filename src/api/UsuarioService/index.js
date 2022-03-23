@@ -13,7 +13,7 @@ export const getUsuarios = async (page) => {
                 throw err
             })
     } catch (e) {
-        console.log('ERR 22 ', e)
+        throw 'ERR 22 ', e
     }
 }
 
@@ -25,11 +25,11 @@ export const getUsuario = async (id) => {
                 return resp.data
             })
             .catch(err => {
-                console.log(err)
+                throw err
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 
@@ -38,7 +38,6 @@ const removeCaracteres = (value) => {
 }
 
 const removeCaracteresLogin = (value) => {
-    console.log(value)
     return value.replace(/[^a-zA-z]/g, '')
 }
 export const insertUsuario = async (usuario) => {
@@ -57,7 +56,7 @@ export const insertUsuario = async (usuario) => {
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 
@@ -74,7 +73,7 @@ export const updateUsuario = async (id, usuario) => {
             })
     } catch (e) {
         ToastAndroid.show(JSON.stringify(e), ToastAndroid.LONG)
-        console.log(e)
+        throw e
     }
 }
 
@@ -91,6 +90,6 @@ export const deleteUsuario = async (id) => {
             })
     } catch (e) {
         ToastAndroid.show(JSON.stringify(e), ToastAndroid.LONG)
-        console.log(e)
+        throw e
     }
 }

@@ -404,7 +404,7 @@ export default function UsuarioForm({ navigation, route }) {
                 // labelStyle={{ fontSize: 15}}
                 mode="contained"
                 color="#B22222"
-                onPress={() => ToastAndroid.show('Cancelar', ToastAndroid.LONG)}>
+                onPress={() => navigation.goBack()}>
                 Cancelar
               </Button>
             </View>

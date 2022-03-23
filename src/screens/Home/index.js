@@ -103,7 +103,7 @@ export default function Home({ navigation }) {
                             icon="playlist-check"
                             labelStyle={{ fontSize: 30 }}
                             color="#2C3E50"
-                            onPress={() => navigation.navigate('Controle', { controle: empresa})} >
+                            onPress={() => navigation.navigate('Controle', { empresa: empresa})} >
                         </Button>
                     </View>
                     <View>

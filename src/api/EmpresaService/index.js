@@ -10,11 +10,10 @@ export const getEmpresas = async (page) => {
             return resp.data
         })
             .catch(err => {
-                console.log(err)
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 
@@ -26,11 +25,11 @@ export const getEmpresa = async (id) => {
             return resp.data
         })
             .catch(err => {
-                console.log(err)
+                throw err
                 throw err
             })
         } catch (e) {
-            console.log(e)
+            throw e
     }
 }
 const removeCaracteres = (value) => {
@@ -54,7 +53,7 @@ export const insertEmpresa = async (empresa) => {
                 throw err
             })
     } catch (e) {
-        console.log(e)
+        throw e
     }
 }
 
@@ -71,7 +70,7 @@ export const updateEmpresa = async (id, empresa) => {
             })
     } catch (e) {
         ToastAndroid.show(JSON.stringify(e.response.data), ToastAndroid.LONG)
-        console.log(e)
+        throw e
     }
 }
 
@@ -88,6 +87,6 @@ export const deleteEmpresa = async (id) => {
             })
     } catch (e) {
         ToastAndroid.show(JSON.stringify(e), ToastAndroid.LONG)
-        console.log(e)
+        throw e
     }
 }

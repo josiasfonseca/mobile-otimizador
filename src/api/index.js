@@ -37,7 +37,7 @@ http.interceptors.response.use(
     return response
   },
   async function (error) {
-    console.log(error.response)
+    // console.log(error.response)
     const originalRequest = (await error) && error.config ? error.config : null
     const errorStatus = error && error.response ? error.response.status : null
     const errorText = error && error.response ? error.response.data.errors : null
@@ -54,7 +54,7 @@ http.interceptors.response.use(
      */
     if (errorStatus === 401 && originalRequest.url != urlLogout && originalRequest.url != urlLogin) {
       const baseURL = http.defaults.baseURL
-      return await http.get(baseURL + 'auth/logout')
+      await http.get(baseURL + 'auth/logout')
         .then((resp) => {
           AsyncStorage.removeItem('TOKEN')
           ToastAndroid.show("Logout realizado", ToastAndroid.LONG)
@@ -62,13 +62,13 @@ http.interceptors.response.use(
             index: 0,
             routes: [{ name: 'Login' }],
           })
-          return resp.data
+          throw resp.data
         })
         .catch(err => {
           throw err
         })
     }
-
+    return false
   }
 )
 
@@ -81,7 +81,7 @@ async function getDadosToken() {
       return retorno.token
     }
   } catch (e) {
-    console.log(JSON.stringify(e))
+    throw JSON.stringify(e)
   }
 }
 export default http;

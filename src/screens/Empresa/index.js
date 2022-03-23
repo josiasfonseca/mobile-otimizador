@@ -68,7 +68,6 @@ export default function Empresa({ navigation, route }) {
     setVisibleActivityIndicator(true)
     await deleteEmpresa(id)
     .then(async res => {
-      console.log(res)
       ToastAndroid.show(`Empresa ${id} excluída com sucesso!`, ToastAndroid.LONG)
       await getApi()
     })
@@ -141,7 +140,6 @@ export default function Empresa({ navigation, route }) {
           optionsPerPage={itemsPerPage}
           itemsPerPage={itemsPerPage}
           numberOfItemsPerPage={15}
-          onItemsPerPageChange={(n) => console.log(n)}
           showFastPaginationControls
         />
       </DataTable>

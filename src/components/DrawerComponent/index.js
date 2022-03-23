@@ -25,7 +25,6 @@ import styles from './styles'
 export function DrawerComponent(props) {
 
     useEffect(async () => {
-        // console.log('PEGOU TOKEN', props)
         await getDadosToken()
     },[userData]);
 

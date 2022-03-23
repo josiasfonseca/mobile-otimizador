@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import {
-    View,
+    View, Alert, ToastAndroid
 } from 'react-native'
 import styles from './styles'
 import { ActivityIndicator, Button, DataTable, FAB, Portal, Provider } from 'react-native-paper';
-import { getControles } from '../../api/ControleService';
+import { getControles, deleteControle } from '../../api/ControleService';
 
 export default function Controle({ navigation, route }) {
 
     const [visibleModal, setVisibleModal] = useState(false)
     const [itemSelected, setItemSelected] = useState({})
-    const [anoSelected, setAnoSelected] = useState([])
 
     const [page, setPage] = useState(0);
     const [itemsPerPage, setitemsPerPage] = useState(15);
@@ -18,7 +17,7 @@ export default function Controle({ navigation, route }) {
     const [searching, setSearching] = useState(false)
     const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
     const [controls, setControls] = useState([])
-
+    const [empresa, setEmpresa] = useState({})
 
     function updateModal(item, value) {
         setVisibleModal(value)
@@ -34,16 +33,13 @@ export default function Controle({ navigation, route }) {
     }, [page])
 
     useEffect(async () => {
-        if (route.params && route.params.controle && route.params.controle) {
-            await getApi()
-            navigation.setOptions({ title: 'Controles Empresa ID: ' + route.params.controle.id_empresa })
+        if (route.params && route.params.empresa && route.params.empresa
+            || (route.params.atualizar && route.params.atualizar == 'S')) {
+            if (!searching)
+                await getApi()
+            navigation.setOptions({ title: 'Controles Emp: ' + route.params.empresa.id_empresa })
         }
     }, [route.params]);
-
-    useEffect(async () => {
-        if (route.params && route.params.atualizar && route.params.atualizar == 'S')
-          await getApi()
-      }, [route.params]);
 
     const updatePage = async (page) => {
         if (!searching)
@@ -51,13 +47,49 @@ export default function Controle({ navigation, route }) {
     }
 
     const getApi = async () => {
-        setSearching(true)
+        try {
+          
+            setEmpresa(route.params.empresa)
+            setSearching(true)
+            setVisibleActivityIndicator(true)
+            
+            const result = await getControles(empresa, page + 1)
+            setitemsPerPage(result.per_page)
+            setTotalPages(result.last_page - 1)
+            setControls(result.data)
+            setSearching(false)
+            setVisibleActivityIndicator(false)
+        } catch (error) {
+            Alert.alert(JSON.stringify(error))
+        } finally {
+            setVisibleActivityIndicator(false)
+        }
+    }
+
+    const confirmToDeleteControle = async (c) => {
+        Alert.alert(
+            "Exclusão",
+            "Confima exclusão do controle " + c.id_controle + ' ?',
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => deleteControleC(c.id_controle) }
+            ]
+        );
+    }
+
+    const deleteControleC = async (id) => {
         setVisibleActivityIndicator(true)
-        const result = await getControles(route.params.controle, page + 1)
-        setitemsPerPage(result.per_page)
-        setTotalPages(result.last_page - 1)
-        setControls(result.data)
-        setSearching(false)
+        await deleteControle(id)
+            .then(async res => {
+                ToastAndroid.show(`Controle ${id} excluído com sucesso!`, ToastAndroid.LONG)
+                await getApi()
+            })
+            .catch(err => {
+                ToastAndroid.show(`Erro de exclusão! ${JSON.stringify(err)}`, ToastAndroid.LONG)
+            })
         setVisibleActivityIndicator(false)
     }
 
@@ -147,7 +179,6 @@ export default function Controle({ navigation, route }) {
                     optionsPerPage={itemsPerPage}
                     itemsPerPage={itemsPerPage}
                     numberOfItemsPerPage={15}
-                    onItemsPerPageChange={(n) => console.log(n)}
                     showFastPaginationControls
                 />
             </DataTable>
