@@ -41,9 +41,7 @@ http.interceptors.response.use(
     const originalRequest = (await error) && error.config ? error.config : null
     const errorStatus = error && error.response ? error.response.status : null
     const errorText = error && error.response ? error.response.data.errors : null
-    if(errorText) {
-      Alert.alert(JSON.stringify(errorText))
-    }
+   
     const urlLogout =
       error && error.config ? error.config.baseURL + 'auth/logout' : ''
     const urlLogin =
@@ -58,10 +56,10 @@ http.interceptors.response.use(
         .then((resp) => {
           AsyncStorage.removeItem('TOKEN')
           ToastAndroid.show("Logout realizado", ToastAndroid.LONG)
-          RootNavigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-          })
+          // RootNavigation.reset({
+          //   index: 0,
+          //   routes: [{ name: 'Login' }],
+          // })
           throw resp.data
         })
         .catch(err => {

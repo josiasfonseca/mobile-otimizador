@@ -1,93 +1,55 @@
-import React, { useEffect } from 'react'
-import { Button, DataTable } from 'react-native-paper';
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, Button, DataTable } from 'react-native-paper';
 
 import { View, ToastAndroid } from 'react-native'
 import styles from './styles'
+import { getEmpresas } from '../../api/EmpresaService';
+import { ScrollView } from 'react-native-gesture-handler';
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
 
-    const optionsPerPage = [2, 3, 4];
+    const [page, setPage] = useState(0);
+    const [itemsPerPage, setitemsPerPage] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
+    const [searching, setSearching] = useState(false)
+    const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
+    const [companies, setCompanies] = useState([])
 
-    const [page, setPage] = React.useState(0);
-    const [itemsPerPage, setItemsPerPage] = React.useState(optionsPerPage[0]);
+    useEffect(async () => {
+        await getApi()
+    }, []);
 
-    useEffect(() => {
-        setPage(1);
-    }, [itemsPerPage]);
+    useEffect(async () => {
+        await getApi()
+    }, [route.params]);
 
-    const companies = [
-        {
-            id_empresa: '1',
-            email: 'joao@ifpr.edu.br',
-            nome: 'ROMAGUERA-CORKERY',
-        },
-        {
-            id_empresa: '2',
-            email: 'GREENFELDER-CARTWRIGHT',
-            nome: 'GREENFELDER-CARTWRIGHT',
-        },
-        {
-            id_empresa: '3',
-            email: 'joana@ifpr.edu.br',
-            nome: 'HILPERT-MAGGIO',
-        },
-        {
-            id_empresa: '4',
-            email: 'joana@ifpr.edu.br',
-            nome: 'TORP GROUP',
-        },
-        {
-            id_empresa: '5',
-            email: 'joana@ifpr.edu.br',
-            nome: 'MORAR, KOHLER AND CRUICKSHANK',
-        },
-        {
-            id_empresa: '6',
-            email: 'joana@ifpr.edu.br',
-            nome: 'HAMMES-DECKOW',
-        },
-        {
-            id_empresa: '7',
-            email: 'joana@ifpr.edu.br',
-            nome: 'DOYLE-JOHNSTON',
-        },
-        {
-            id_empresa: '8',
-            email: 'joana@ifpr.edu.br',
-            nome: 'LABADIE, CRUICKSHANK AND HOWE',
-        },
-        {
-            id_empresa: '9',
-            email: 'joana@ifpr.edu.br',
-            nome: 'BLANDA-MACEJKOVIC',
-        },
-        {
-            id_empresa: '10',
-            email: 'joana@ifpr.edu.br',
-            nome: 'BERNHARD INC',
-        },
-        {
-            id_empresa: '11',
-            email: 'joana@ifpr.edu.br',
-            nome: 'DARE-GAYLORD3',
-        },
-        {
-            id_empresa: '12',
-            email: 'joana@ifpr.edu.br',
-            nome: 'KULAS-MCDERMOTT',
-        },
-        {
-            id_empresa: '13',
-            email: 'joana@ifpr.edu.br',
-            nome: 'ZIEMANN-ZBONCAK',
-        },
+    useEffect(async () => {
+        await getApi()
+    }, [page])
 
-    ];
+    const updatePage = async (page) => {
+        if (!searching)
+            setPage(page)
+    }
+
+    const getApi = async () => {
+        setSearching(true)
+        setVisibleActivityIndicator(true)
+        const result = await getEmpresas(page + 1)
+        setitemsPerPage(result.per_page)
+        setTotalPages(result.last_page - 1)
+        setCompanies(result.data)
+        setSearching(false)
+        setVisibleActivityIndicator(false)
+    }
 
     const elements = []
-    for (let i = 0; i < companies.length; i++) {
-        elements.push(companies[i])
+    const toRenderItems = async () => {
+        for (let i = 0; i < companies.length; i++) {
+            elements.push(companies[i])
+        }
     }
+    toRenderItems()
 
     function renderDataItem(empresa, index) {
         return (
@@ -103,7 +65,7 @@ export default function Home({ navigation }) {
                             icon="playlist-check"
                             labelStyle={{ fontSize: 30 }}
                             color="#2C3E50"
-                            onPress={() => navigation.navigate('Controle', { empresa: empresa})} >
+                            onPress={() => navigation.navigate('Controle', { empresa: empresa })} >
                         </Button>
                     </View>
                     <View>
@@ -114,7 +76,7 @@ export default function Home({ navigation }) {
                             icon="file-import"
                             labelStyle={{ fontSize: 30 }}
                             color="#943126"
-                            onPress={() => navigation.navigate('Importador',  { controle: empresa})} >
+                            onPress={() => navigation.navigate('Importador', { controle: empresa })} >
                         </Button>
                     </View>
                 </DataTable.Cell>
@@ -124,29 +86,36 @@ export default function Home({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <DataTable>
+            <DataTable style={styles.datatable}>
                 <DataTable.Header>
                     <DataTable.Title numeric style={styles.titleId}>ID</DataTable.Title>
                     <DataTable.Title style={styles.titleNome}>Nome</DataTable.Title>
                     <DataTable.Title style={styles.titleAcao}>Ação</DataTable.Title>
                 </DataTable.Header>
 
-                <View>
-                    {elements.map((item, index) => renderDataItem(item, index))}
-                </View>
+                <ScrollView>
+                    <View>
+                        {elements.map((item, index) => renderDataItem(item, index))}
+                    </View>
+                </ScrollView>
 
                 <DataTable.Pagination
                     page={page}
-                    numberOfPages={3}
-                    onPageChange={(page) => setPage(page)}
-                    label="1-2 of 6"
-                    optionsPerPage={optionsPerPage}
+                    numberOfPages={totalPages + 1}
+                    onPageChange={(page) => updatePage(page)}
+                    label={(page + 1) + " de " + (totalPages + 1)}
+                    optionsPerPage={itemsPerPage}
                     itemsPerPage={itemsPerPage}
-                    setItemsPerPage={setItemsPerPage}
-                    showFastPagination
-                    optionsLabel={'Rows per page'}
+                    numberOfItemsPerPage={15}
+                    showFastPaginationControls
                 />
             </DataTable>
+            {
+                visibleActivityIndicator &&
+                <View style={styles.loading}  >
+                    <ActivityIndicator color='#13B58C' />
+                </View>
+            }
         </View>
     )
 }

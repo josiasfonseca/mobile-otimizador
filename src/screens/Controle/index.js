@@ -17,7 +17,7 @@ export default function Controle({ navigation, route }) {
     const [searching, setSearching] = useState(false)
     const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
     const [controls, setControls] = useState([])
-    const [empresa, setEmpresa] = useState({})
+    // const [empresa, setEmpresa] = useState({})
 
     function updateModal(item, value) {
         setVisibleModal(value)
@@ -33,7 +33,7 @@ export default function Controle({ navigation, route }) {
     }, [page])
 
     useEffect(async () => {
-        if (route.params && route.params.empresa && route.params.empresa
+        if (route.params && route.params.empresa
             || (route.params.atualizar && route.params.atualizar == 'S')) {
             if (!searching)
                 await getApi()
@@ -48,19 +48,17 @@ export default function Controle({ navigation, route }) {
 
     const getApi = async () => {
         try {
-          
-            setEmpresa(route.params.empresa)
             setSearching(true)
             setVisibleActivityIndicator(true)
             
-            const result = await getControles(empresa, page + 1)
+            const result = await getControles(route.params.empresa, page + 1)
             setitemsPerPage(result.per_page)
             setTotalPages(result.last_page - 1)
             setControls(result.data)
             setSearching(false)
             setVisibleActivityIndicator(false)
         } catch (error) {
-            Alert.alert(JSON.stringify(error))
+            throw (JSON.stringify(error))
         } finally {
             setVisibleActivityIndicator(false)
         }
@@ -115,7 +113,7 @@ export default function Controle({ navigation, route }) {
                             style={styles.buttonEdit}
                             labelStyle={{ fontSize: 30 }}
                             color="#2C3E50"
-                            onPress={() => navigation.navigate('ControleForm', { controle: controle })} />
+                            onPress={() => navigation.navigate('ControleForm', { controle: controle, empresa: route.params.empresa })} />
                     </View>
                     <View style={styles.viewButtonDelete}>
                         <Button
@@ -189,7 +187,7 @@ export default function Controle({ navigation, route }) {
                         open={false}
                         icon='plus'
                         color="#fff"
-                        onPress={() => navigation.navigate('ControleForm', { controle: {} })}
+                        onPress={() => navigation.navigate('ControleForm', { empresa: route.params.empresa })}
                     />
                 </Portal>
             </Provider>

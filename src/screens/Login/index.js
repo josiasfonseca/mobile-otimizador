@@ -61,7 +61,7 @@ export default function Login({ navigation, route }) {
     try {
       
       if (user == null || password == null) {
-        Alert.alert('Informe o usuário e a senha!')
+        ToastAndroid.show('Informe o usuário e a senha!', ToastAndroid.LONG)
         return
       }
       realizandoLogin = true

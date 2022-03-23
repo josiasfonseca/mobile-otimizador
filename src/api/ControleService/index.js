@@ -33,10 +33,11 @@ export const getControle = async (id) => {
     }
 }
 
-export const insertControle = async (controle) => {
+export const insertControle = async (controle, id_empresa) => {
     try {
+        const c = { ...controle, empresa_id: id_empresa}
         const baseURL = http.defaults.baseURL
-        return await http.post(baseURL + 'controles/incluir', controle)
+        return await http.post(baseURL + 'controles/incluir', c)
             .then((resp) => {
                 return resp
             })

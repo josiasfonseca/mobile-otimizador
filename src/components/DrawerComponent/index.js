@@ -26,7 +26,7 @@ export function DrawerComponent(props) {
 
     useEffect(async () => {
         await getDadosToken()
-    },[userData]);
+    },[props]);
 
     // const paperTheme = useTheme();
     // const { signOut, toggleTheme } = React.useContext(AuthContext);

@@ -113,19 +113,18 @@ export default function ControleForm({ navigation, route }) {
     useEffect(async () => {
         setVisibleActivityIndicator(true)
         setControl({ ...control })
+
         const control_id = route.params
             && route.params.controle
             && route.params.controle.id_controle
             ? route.params.controle.id_controle
             : null
-        const codigoEmpresa = route.params.controle.empresa_id
-        Alert.alert("CODIGO EMPRESA: " + codigoEmpresa)
-        setEmpresa({ id_empresa: codigoEmpresa })
+        const codigoEmpresa = route.params.empresa.id_empresa
         if (control_id) {
             navigation.setOptions({ title: 'Edição de Controle Emp: ' + codigoEmpresa })
             setControl({ ...route.params.controle })
         } else {
-            navigation.setOptions({ title: 'Inclusão de Controle' })
+            navigation.setOptions({ title: 'Inclusão de Controle (' + codigoEmpresa + ')' })
             setControl({ ...controle })
         }
         setVisibleActivityIndicator(false)
@@ -143,21 +142,17 @@ export default function ControleForm({ navigation, route }) {
         delete control.observacoes
         delete control.empresa
 
-        setEmpresa({ id_empresa: route.params.controle.empresa_id })
         if (!control.id_controle || control.id_controle == '') {
             setVisibleActivityIndicator(true)
-            setControl({ ...control, id_controle: '' })
-            if (!empresa) {
-                Alert.alert('SEM EMPRESA')
-            }
-            return
-            await insertControle(control)
+            setControl({ ...control, id_controle: '', empresa_id: route.params.empresa.id_empresa })
+            
+            await insertControle(control, route.params.empresa.id_empresa)
                 .then(res => {
                     ToastAndroid.show('Cadastro efetuado com sucesso!', ToastAndroid.LONG)
                     setRetorno(res.status)
                     setControl({ ...control })
                     setVisibleActivityIndicator(false)
-                    navigation.navigate('Controle', { atualizar: 'S', empresa })
+                    navigation.navigate('Controle', { atualizar: 'S', empresa: { ...route.params.empresa } })
                 })
                 .catch(err => {
                     setMessage(JSON.stringify(err.message ?? err))
