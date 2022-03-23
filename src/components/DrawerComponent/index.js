@@ -154,6 +154,7 @@ export function DrawerComponent(props) {
                     label="Sair"
                     onPress={() => { logout() }}
                 />
+                <Caption style={{ marginLeft: 20 }}> { userData && userData.tipo_usuario ? userData.tipo_usuario.tipo : '' } </Caption>
             </Drawer.Section>
         </View>
     );
