@@ -30,6 +30,7 @@ export const serviceLogout = async () => {
                 return resp.data
             })
             .catch(err => {
+                AsyncStorage.removeItem('TOKEN')
                 throw err
             })
     } catch (e) {

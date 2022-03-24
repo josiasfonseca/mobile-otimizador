@@ -39,13 +39,18 @@ export function DrawerComponent(props) {
     };
 
     const logout = async () => {
-        await serviceLogout()
-        AsyncStorage.removeItem('TOKEN')
-        showToast("Logout realizado")
-        props.navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-        })
+        try {
+            await serviceLogout()
+        } catch (error) {
+            throw error
+        } finally {
+            AsyncStorage.removeItem('TOKEN')
+            showToast("Logout realizado")
+            props.navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            })
+        }
     }
     async function getDadosToken() {
 

@@ -10,53 +10,60 @@ import styles from './styles'
 // Import Document Picker
 import * as DocumentPicker from 'expo-document-picker';
 import { ToastAndroid } from 'react-native';
+import { updloadFileCliente } from '../../api/ImportadorService';
 
 export default function Importador({ navigation }) {
 
-    const [singleFile, setSingleFile] = useState(null);
     const [fileClienteCliente, setFileClienteCliente] = useState(null);
     const [fileClienteContabilidade, setFileClienteContabilidade] = useState(null);
 
-    const uploadImage = async () => {
-        // Check if any file is selected or not
-        if (singleFile != null) {
-            // If file selected then create FormData
-            const fileToUpload = singleFile;
-            const data = new FormData();
-            data.append('name', 'Image Upload');
-            data.append('file_attachment', fileToUpload);
-            // Please change file upload URL
-            let res = await fetch(
-                'http://localhost/upload.php',
-                {
-                    method: 'post',
-                    body: data,
-                    headers: {
-                        'Content-Type': 'multipart/form-data; ',
-                    },
-                }
-            );
-            let responseJson = await res.json();
-            if (responseJson.status == 1) {
-                alert('Upload Successful');
-            }
+    const uploadFiles = async (type) => {
+        if (fileClienteCliente != null || fileClienteContabilidade != null) {
+            // const fileToUpload = type == 'receberCliente' ? fileClienteCliente : fileClienteContabilidade;
+            const fileToUpload = fileClienteCliente
+            await updloadFileCliente(fileClienteCliente, 1, 1)
+                .then(res => {
+                    ToastAndroid.show('Enviou arquivo', ToastAndroid.LONG)
+                    Alert.alert(JSON.stringify(res))
+                })
+                .catch(err => {
+                    Alert.alert(JSON.stringify(err))
+                    console.log('ERR: ', err)
+                })
         } else {
             // If no file selected the show alert
             alert('Please Select File first');
         }
     };
 
-    async function selectFile() {
+    async function selectFile(type) {
         // Opening Document Picker to select one file
         try {
-
-            const res = await DocumentPicker.getDocumentAsync({});
-            if (res && res.type == 'success')
-                setSingleFile(res);
-
-            Alert.alert('Arquivo carregado!\nNome: ' + res.name)
+            console.log(DocumentPicker.)
+            return
+            await DocumentPicker.getDocumentAsync({
+                copyToCacheDirectory: false,
+                // type: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'image/png']
+            })
+            .then(resp => {
+                console.log('RES FILE SELECT ', resp)
+                if (res && res.type == 'success') {
+                    if (type == 'receberCliente')
+                        setFileClienteCliente(res)
+                    else if (type == 'receberContabilidade')
+                        setFileClienteContabilidade(res)
+                }
+    
+                Alert.alert('Arquivo carregado!\nNome: ' + res.name)
+                
+            })
+            .catch(err => {
+                console.log('Errrror' + JSON.stringify(err))
+                Alert.alert('Errrror' + JSON.stringify(err))
+            })
         } catch (err) {
-            setSingleFile(null);
+            setFileClienteCliente(null);
+            setFileClienteContabilidade(null);
             // Handling any exception (If any)
             if (DocumentPicker.isCancel(err)) {
                 // If user canceled the document selection
@@ -76,27 +83,48 @@ export default function Importador({ navigation }) {
                 <View style={styles.viewTitleImportadorCliente}>
                     <Text style={styles.titleImportadorCliente}>Importar arquivos Clientes</Text>
                 </View>
-                <View style={styles.importCliente} >
-                    <View style={styles.viewImports}>
-                        <View style={styles.fileCliente}>
-                            <Text>Arquivo cliente</Text>
-                            <Button
-                                title='importar'
-                                onPress={selectFile}
-                                color='#13B58C'
-                                style={styles.inputButonImportCliente} />
-                        </View>
-
-                        <View style={styles.fileContabilidade}>
-                            <Text>Arquivo Contabilidade</Text>
-                            <Button
-                                title='importar'
-                                color='#13B58C'
-                                style={styles.inputButonImportCliente} />
-                        </View>
+                {/* Importação arquivo clientes */}
+                <View style={styles.viewImports}>
+                    <View style={styles.viewImportDescricao}>
+                        <Text style={{ textAlign: 'center', fontSize: 16 }}>Arquivo Cliente</Text>
+                    </View>
+                    <View style={styles.fileReceberImportCliente}>
+                        <Button
+                            title='importar'
+                            onPress={() => selectFile('receberCliente')}
+                            color='#13B58C'
+                            style={styles.inputButonImportCliente} />
+                    </View>
+                    <View style={styles.fileReceberImportCliente}>
+                        <Button
+                            title='Enviar'
+                            onPress={() => uploadFiles('receberCliente')}
+                            color='#13B58C'
+                            disabled={fileClienteCliente == null}
+                            style={styles.inputButonImportCliente} />
                     </View>
                 </View>
-                <View></View>
+                {/* Importação arquivo contabilidade */}
+                <View style={styles.viewImports}>
+                    <View style={styles.viewImportDescricao}>
+                        <Text style={{ textAlign: 'center', fontSize: 16 }}>Arquivo Contabilidade</Text>
+                    </View>
+                    <View style={styles.fileReceberImportCliente}>
+                        <Button
+                            title='importar'
+                            onPress={() => selectFile('receberCliente')}
+                            color='#13B58C'
+                            style={styles.inputButonImportCliente} />
+                    </View>
+                    <View style={styles.fileReceberImportCliente}>
+                        <Button
+                            title='Enviar'
+                            onPress={() => uploadFiles('')}
+                            color='#13B58C'
+                            disabled={fileClienteCliente == null || fileClienteContabilidade == null}
+                            style={styles.inputButonImportCliente} />
+                    </View>
+                </View>
             </View>
             <View style={styles.viewImportFornecedor}>
                 <View style={styles.viewTitleImportadorFornecedor}>
