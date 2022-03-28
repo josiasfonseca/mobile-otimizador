@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '90%',
         alignItems: 'center',
-        height: 210,
+        height: 250,
         borderWidth: 1,
         borderRadius: 20
     },
@@ -51,9 +51,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         marginTop: 60
     },
-
-
-
     ////
     importReceberCliente: {
         // marginTop: 5,

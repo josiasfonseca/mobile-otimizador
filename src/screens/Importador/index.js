@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -9,69 +9,87 @@ import {
 import styles from './styles'
 // Import Document Picker
 import * as DocumentPicker from 'expo-document-picker';
+
 import { ToastAndroid } from 'react-native';
-import { updloadFileCliente } from '../../api/ImportadorService';
+import {
+    updloadFileReceberCliente,
+    updloadFileReceberContabilidade,
+    confrontarReceber,
+    gerarArquivoContabilidade,
+    downloadArquivoContabilidade
+} from '../../api/ImportadorService';
 
-export default function Importador({ navigation }) {
+export default function Importador({ navigation, route }) {
 
-    const [fileClienteCliente, setFileClienteCliente] = useState(null);
-    const [fileClienteContabilidade, setFileClienteContabilidade] = useState(null);
+    const [fileClienteCliente, setFileClienteCliente] = useState(null)
+    const [fileClienteContabilidade, setFileClienteContabilidade] = useState(null)
+    const [image, setImage] = useState(null)
+    const [confrontar, setConfrontar] = useState({ cliente: false, cont: false })
+
+    useEffect(() => {
+        setFileClienteCliente(null)
+        setFileClienteContabilidade(null)
+        setConfrontar({ cliente: false, cont: false })
+    }, [route])
+
+    const downloadArquivoCont = async () => {
+        await downloadArquivoContabilidade(1)
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
+    }
+
+    const gerarArquivoCont = async () => {
+    }
+
+    const realizarConfrontoCliente = async () => {
+        return await confrontarReceber(1)
+            .then(() => ToastAndroid.show('Operação realizada!', ToastAndroid.LONG))
+            .catch(() => ToastAndroid.show('Erro. Tente novamente!', ToastAndroid.LONG))
+    }
+    const upload = async (type) => {
+        if (type == 'receberCliente')
+            return await updloadFileReceberCliente(fileClienteCliente, 1, 1)
+                .then(() => setConfrontar({ ...confrontar, cliente: true }))
+        else if (type == 'receberContabilidade')
+            return await updloadFileReceberContabilidade(fileClienteContabilidade, 1, 1)
+                .then(() => setConfrontar({ ...confrontar, cont: true }))
+    }
 
     const uploadFiles = async (type) => {
         if (fileClienteCliente != null || fileClienteContabilidade != null) {
-            // const fileToUpload = type == 'receberCliente' ? fileClienteCliente : fileClienteContabilidade;
-            const fileToUpload = fileClienteCliente
-            await updloadFileCliente(fileClienteCliente, 1, 1)
-                .then(res => {
+            await upload(type, 1, 1)
+                .then(() => {
                     ToastAndroid.show('Enviou arquivo', ToastAndroid.LONG)
-                    Alert.alert(JSON.stringify(res))
                 })
-                .catch(err => {
-                    Alert.alert(JSON.stringify(err))
-                    console.log('ERR: ', err)
+                .catch((err) => {
+                    console.log(err)
+                    ToastAndroid.show('Erro ao enviar arquivo.', ToastAndroid.LONG)
                 })
         } else {
-            // If no file selected the show alert
-            alert('Please Select File first');
+            ToastAndroid.show('Nenhum arquivo selecionado.', ToastAndroid.LONG);
         }
     };
 
     async function selectFile(type) {
         // Opening Document Picker to select one file
         try {
-            console.log(DocumentPicker.)
-            return
-            await DocumentPicker.getDocumentAsync({
-                copyToCacheDirectory: false,
-                // type: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'image/png']
-            })
-            .then(resp => {
-                console.log('RES FILE SELECT ', resp)
-                if (res && res.type == 'success') {
-                    if (type == 'receberCliente')
-                        setFileClienteCliente(res)
-                    else if (type == 'receberContabilidade')
-                        setFileClienteContabilidade(res)
-                }
-    
-                Alert.alert('Arquivo carregado!\nNome: ' + res.name)
-                
-            })
-            .catch(err => {
-                console.log('Errrror' + JSON.stringify(err))
-                Alert.alert('Errrror' + JSON.stringify(err))
-            })
+
+            await DocumentPicker.getDocumentAsync({})
+                .then(resp => {
+                    if (resp && resp.type == 'success') {
+                        if (type == 'receberCliente')
+                            setFileClienteCliente(resp)
+                        else if (type == 'receberContabilidade')
+                            setFileClienteContabilidade(resp)
+                        ToastAndroid.show('Arquivo carregado!\nNome: ' + resp.name, ToastAndroid.LONG)
+                    }
+                })
+                .catch(() => {
+                    ToastAndroid.show('Erro ao carregar arquivo...', ToastAndroid.LONG)
+                })
         } catch (err) {
             setFileClienteCliente(null);
             setFileClienteContabilidade(null);
-            // Handling any exception (If any)
-            if (DocumentPicker.isCancel(err)) {
-                // If user canceled the document selection
-                alert('Canceled');
-            } else {
-                ToastAndroid.show('Unknown Error: ' + JSON.stringify(err));
-                throw err;
-            }
         }
     };
 
@@ -112,17 +130,40 @@ export default function Importador({ navigation }) {
                     <View style={styles.fileReceberImportCliente}>
                         <Button
                             title='importar'
-                            onPress={() => selectFile('receberCliente')}
+                            onPress={() => selectFile('receberContabilidade')}
                             color='#13B58C'
                             style={styles.inputButonImportCliente} />
                     </View>
                     <View style={styles.fileReceberImportCliente}>
                         <Button
                             title='Enviar'
-                            onPress={() => uploadFiles('')}
+                            onPress={() => uploadFiles('receberContabilidade')}
                             color='#13B58C'
-                            disabled={fileClienteCliente == null || fileClienteContabilidade == null}
+                            disabled={fileClienteContabilidade == null}
                             style={styles.inputButonImportCliente} />
+                    </View>
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ marginTop: 10 }}>
+                        <Button
+                            title='Confrontar'
+                            onPress={() => realizarConfrontoCliente()}
+                            color='#13B58C'
+                            style={{ boderRadius: 20, marginTop: 10 }} />
+                    </View>
+                    <View style={{ marginTop: 10 }}>
+                        <Button
+                            title='Gerar Arquivo'
+                            onPress={() => gerarArquivoCont()}
+                            color='#13B58C'
+                            style={{ boderRadius: 20, marginTop: 10 }} />
+                    </View>
+                    <View style={{ marginTop: 10 }}>
+                        <Button
+                            title='Download Arquivo Contabilidade'
+                            onPress={() => downloadArquivoCont()}
+                            color='#13B58C'
+                            style={{ boderRadius: 20, marginTop: 10 }} />
                     </View>
                 </View>
             </View>

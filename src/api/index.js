@@ -2,7 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 
 const http = axios.create({
-  baseURL: 'https://api-otimizador.herokuapp.com/api/'
+  baseURL: 'https://api-otimizador.herokuapp.com/api/',
+  headers: {
+    'Content-Type' : 'application/json'
+  }
 });
 
 
@@ -11,7 +14,7 @@ http.interceptors.request.use(
 
     let urlLogin = config.baseURL + 'auth/login'
     let urlMe = config.baseURL + 'auth/me'
-    let urlLogout = config.baseURL + 'auth/logout'
+    // let urlLogout = config.baseURL + 'auth/logout'
     if (config.url !== urlMe && config.url !== urlLogin) {
       const tokenStorage = await getDadosToken()
       const token = `Bearer ${tokenStorage || ''}`
@@ -34,7 +37,7 @@ http.interceptors.response.use(
       // that falls out of the range of 2xx
       console.log('ERROR RESPONSE DATA',error.response.data);
       console.log('ERROR RESPONSE STATUS',error.response.status);
-      console.log('ERROR RESPONSE HEADERS',error.response.headers);
+      // console.log('ERROR RESPONSE HEADERS',error.response.headers);
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -42,11 +45,10 @@ http.interceptors.response.use(
       console.log('ERROR RESPONSE REQUEST',error.request);
     } else {
       // Something happened in setting up the request that triggered an Error
-      console.log('Error MESSAGE', error.message);
+      // console.log('Error MESSAGE', error.message);
     }
-    console.log('ERROR RESPONSE CONFIG',error.config);
 
-    // console.log(error.response)
+    console.log('REPONSE',error.response)
     const originalRequest = (await error) && error.config ? error.config : null
     const errorStatus = error && error.response ? error.response.status : null
     const errorText = error && error.response ? error.response.data.errors : null

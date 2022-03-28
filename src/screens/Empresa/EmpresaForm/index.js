@@ -47,11 +47,16 @@ export default function EmpresaForm({ navigation, route }) {
   const [message, setMessage] = useState('')
   const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
   const [errors, setErrors] = useState(false)
+  const [token, setToken] = useState(false)
 
   const onChangeValueInput = (key, value) => {
     setCompany({ ...company, [key]: value })
     validaCampos()
   }
+  // useEffect(async () => {
+  //   await getDadosToken()
+  //   console.log(token)
+  // },[route])
 
   const validaCampos = async () => {
     setErrors(false)
@@ -79,7 +84,22 @@ export default function EmpresaForm({ navigation, route }) {
       setCompany({ ...company })
     }
     setVisibleActivityIndicator(false)
+
   }, [route.params.empresa])
+
+  async function getDadosToken() {
+
+    try {
+      const jsonValue = await AsyncStorage.getItem('TOKEN')
+      const retorno = jsonValue != null ? JSON.parse(jsonValue) : null
+      if (retorno && retorno.token && retorno.user) {
+        setToken(...retorno.token)
+        return retorno.token
+      }
+    } catch (e) {
+      throw JSON.stringify(e)
+    }
+  }
 
   useEffect(async () => {
     if (company.cep.length >= 9) {
@@ -445,7 +465,8 @@ export default function EmpresaForm({ navigation, route }) {
                 icon="content-save"
                 mode="contained"
                 color="#3CB371"
-                onPress={() => salvar()}>
+                onPress={() => salvar()}
+                >
                 Salvar
               </Button>
             </View>
