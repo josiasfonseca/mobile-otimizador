@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
-    TouchableOpacity,
     Button,
-    Alert,
 } from 'react-native'
 import styles from './styles'
 // Import Document Picker
@@ -18,13 +16,14 @@ import {
     gerarArquivoContabilidade,
     downloadArquivoContabilidade
 } from '../../api/ImportadorService';
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function Importador({ navigation, route }) {
 
     const [fileClienteCliente, setFileClienteCliente] = useState(null)
     const [fileClienteContabilidade, setFileClienteContabilidade] = useState(null)
-    const [image, setImage] = useState(null)
     const [confrontar, setConfrontar] = useState({ cliente: false, cont: false })
+    const [visibleActivityIndicator, setVisibleActivityIndicator] = useState(false)
 
     useEffect(() => {
         setFileClienteCliente(null)
@@ -33,18 +32,38 @@ export default function Importador({ navigation, route }) {
     }, [route])
 
     const downloadArquivoCont = async () => {
-        await downloadArquivoContabilidade(1)
-            .then(res => console.log(res))
-            .catch(err => console.log(err))
+        console.log('downloadArquivoCont')
+        setVisibleActivityIndicator(true)
+
+        downloadArquivoContabilidade(1)
+            .then(res => {
+                ToastAndroid.show('Download realizado', ToastAndroid.LONG)
+                console.log('then', res)
+            })
+            .catch(err => {
+                ToastAndroid.show('!!Download realizado', ToastAndroid.LONG)
+                console.log('catch ', err)
+            })
+            .finally(() => {
+                console.log('downloadArquivoCont finally')
+                setVisibleActivityIndicator(false)
+            })
     }
 
     const gerarArquivoCont = async () => {
+        setVisibleActivityIndicator(true)
+        await gerarArquivoContabilidade(1)
+            .then(() => ToastAndroid.show('Arquivo gerado. Clique em fazer download!', ToastAndroid.LONG))
+            .catch(() => ToastAndroid.show('Erro. Tente novamente!', ToastAndroid.LONG))
+            .finally(() => setVisibleActivityIndicator(false))
     }
 
     const realizarConfrontoCliente = async () => {
+        setVisibleActivityIndicator(true)
         return await confrontarReceber(1)
             .then(() => ToastAndroid.show('Operação realizada!', ToastAndroid.LONG))
             .catch(() => ToastAndroid.show('Erro. Tente novamente!', ToastAndroid.LONG))
+            .finally(() => setVisibleActivityIndicator(false))
     }
     const upload = async (type) => {
         if (type == 'receberCliente')
@@ -57,6 +76,7 @@ export default function Importador({ navigation, route }) {
 
     const uploadFiles = async (type) => {
         if (fileClienteCliente != null || fileClienteContabilidade != null) {
+            setVisibleActivityIndicator(true)
             await upload(type, 1, 1)
                 .then(() => {
                     ToastAndroid.show('Enviou arquivo', ToastAndroid.LONG)
@@ -65,15 +85,15 @@ export default function Importador({ navigation, route }) {
                     console.log(err)
                     ToastAndroid.show('Erro ao enviar arquivo.', ToastAndroid.LONG)
                 })
+                .finally(() => setVisibleActivityIndicator(false))
         } else {
             ToastAndroid.show('Nenhum arquivo selecionado.', ToastAndroid.LONG);
         }
     };
 
     async function selectFile(type) {
-        // Opening Document Picker to select one file
+        setVisibleActivityIndicator(true)
         try {
-
             await DocumentPicker.getDocumentAsync({})
                 .then(resp => {
                     if (resp && resp.type == 'success') {
@@ -87,21 +107,21 @@ export default function Importador({ navigation, route }) {
                 .catch(() => {
                     ToastAndroid.show('Erro ao carregar arquivo...', ToastAndroid.LONG)
                 })
+                .finally(() => setVisibleActivityIndicator(false))
         } catch (err) {
+            setVisibleActivityIndicator(false)
             setFileClienteCliente(null);
             setFileClienteContabilidade(null);
         }
     };
 
     return (
-        // <SafeAreaView style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
-        // <View style={{ width: '100%' }}>
         <View style={styles.container}>
             <View style={styles.viewImportCliente}>
                 <View style={styles.viewTitleImportadorCliente}>
                     <Text style={styles.titleImportadorCliente}>Importar arquivos Clientes</Text>
                 </View>
-                {/* Importação arquivo clientes */}
+                {/* Importação arquivo RECEBER clientes */}
                 <View style={styles.viewImports}>
                     <View style={styles.viewImportDescricao}>
                         <Text style={{ textAlign: 'center', fontSize: 16 }}>Arquivo Cliente</Text>
@@ -111,6 +131,7 @@ export default function Importador({ navigation, route }) {
                             title='importar'
                             onPress={() => selectFile('receberCliente')}
                             color='#13B58C'
+                            disabled={fileClienteCliente != null}
                             style={styles.inputButonImportCliente} />
                     </View>
                     <View style={styles.fileReceberImportCliente}>
@@ -122,7 +143,7 @@ export default function Importador({ navigation, route }) {
                             style={styles.inputButonImportCliente} />
                     </View>
                 </View>
-                {/* Importação arquivo contabilidade */}
+                {/* Importação RECEBER arquivo contabilidade */}
                 <View style={styles.viewImports}>
                     <View style={styles.viewImportDescricao}>
                         <Text style={{ textAlign: 'center', fontSize: 16 }}>Arquivo Contabilidade</Text>
@@ -132,6 +153,7 @@ export default function Importador({ navigation, route }) {
                             title='importar'
                             onPress={() => selectFile('receberContabilidade')}
                             color='#13B58C'
+                            disabled={fileClienteContabilidade != null}
                             style={styles.inputButonImportCliente} />
                     </View>
                     <View style={styles.fileReceberImportCliente}>
@@ -185,8 +207,12 @@ export default function Importador({ navigation, route }) {
                     </View>
                 </View>
             </View>
+            {
+                visibleActivityIndicator &&
+                <View style={styles.loading}  >
+                    <ActivityIndicator color='#13B58C' />
+                </View>
+            }
         </View>
-        // </View>
-        // </SafeAreaView>
     )
 }

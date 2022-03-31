@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         color: '#E5E5E5',
-        marginTop: StatusBar.currentHeight || 0,
     },
     viewImportCliente: {
         flexDirection: 'column',
@@ -84,6 +83,17 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         marginTop: 60
     },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        opacity: 0.7,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
 })
 
 export default styles
