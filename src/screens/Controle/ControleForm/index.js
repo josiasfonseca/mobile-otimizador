@@ -71,7 +71,7 @@ export default function ControleForm({ navigation, route }) {
 
     const validaCampos = async () => {
         setErrors(false)
-        if (control.ano.length < 1 || control.ano > new Date().getFullYear() || control.ano < (new Date().getFullYear() - 10))
+        if (control.ano.length < 1 || control.ano > new Date().getFullYear() || control.ano < (new Date().getFullYear() - 50))
             setErrors(true)
     }
 
@@ -119,7 +119,8 @@ export default function ControleForm({ navigation, route }) {
             && route.params.controle.id_controle
             ? route.params.controle.id_controle
             : null
-        const codigoEmpresa = route.params.empresa.id_empresa
+        const codigoEmpresa = route.params.controle.empresa.id_empresa
+        console.log(route.params.controle.empresa.id_empresa)
         if (control_id) {
             navigation.setOptions({ title: 'Edição de Controle Emp: ' + codigoEmpresa })
             setControl({ ...route.params.controle })
@@ -152,7 +153,7 @@ export default function ControleForm({ navigation, route }) {
                     setRetorno(res.status)
                     setControl({ ...control })
                     setVisibleActivityIndicator(false)
-                    navigation.navigate('Controle', { atualizar: 'S', empresa: { ...route.params.empresa } })
+                    navigation.navigate('Controle', { atualizar: 'S', empresa: { ...route.params.controle.empresa } })
                 })
                 .catch(err => {
                     setMessage(JSON.stringify(err.message ?? err))
@@ -165,7 +166,7 @@ export default function ControleForm({ navigation, route }) {
                     setRetorno(res)
                     setControl({ ...control })
                     setVisibleActivityIndicator(false)
-                    navigation.navigate('Controle', { atualizar: 'S', empresa })
+                    navigation.navigate('Controle', { atualizar: 'S', empresa: { ...route.params.controle.empresa } })
                 })
                 .catch(err => {
                     setMessage(JSON.stringify(err.message ?? err))
@@ -173,6 +174,7 @@ export default function ControleForm({ navigation, route }) {
 
             setVisibleActivityIndicator(false)
         }
+        setControl({ ...controle})
     }
 
     return (

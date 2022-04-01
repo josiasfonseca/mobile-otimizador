@@ -27,13 +27,15 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions": [
-        "WRITE_EXTERNAL_STORAGE",
-        "READ_EXTERNAL_STORAGE",
-        "VIBRATE",
-        "INTERNET"
-      ],
       "package": "com.otimizador.contabil"
-    }
+    },
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "isAccessMediaLocationEnabled": "true"
+        }
+      ]
+    ]
   }
 }

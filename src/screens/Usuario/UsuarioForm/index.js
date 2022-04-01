@@ -15,6 +15,7 @@ import { ScrollView } from 'react-native';
 import { getCep } from '../../../api/SharedService';
 import { insertUsuario, updateUsuario } from '../../../api/UsuarioService';
 import { TextInputMask } from 'react-native-masked-text';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function UsuarioForm({ navigation, route }) {
 
@@ -23,6 +24,7 @@ export default function UsuarioForm({ navigation, route }) {
     bairro: '', cidade: '', uf: '', tipo_usuario_id: 1
   }
 
+  const [userLogado, setUserLogado] = useState(usuario)
   const [user, setUser] = useState(usuario)
   const [retorno, setRetorno] = useState(null)
   const [message, setMessage] = useState('')
@@ -51,6 +53,10 @@ export default function UsuarioForm({ navigation, route }) {
   }
   useEffect(async () => {
     validaCampos()
+    const store = await AsyncStorage.getItem('TOKEN')
+    const j = JSON.parse(store)
+    const u = j.user
+    setUserLogado({ ...u })
   }, [])
 
   const toogleIsSecureTextEntry = async () => {
@@ -412,11 +418,11 @@ export default function UsuarioForm({ navigation, route }) {
               <Button
                 style={styles.buttonSalvar}
                 icon="content-save"
-                // labelStyle={{ fontSize: 15 }}
+                disabled={userLogado.tipo_usuario_id == 2}
                 mode="contained"
                 color="#3CB371"
                 onPress={() => salvar()}>
-                Salvar
+                Salvar { userLogado.tipo_usuario_id }
               </Button>
             </View>
           </View>

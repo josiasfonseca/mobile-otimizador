@@ -16,6 +16,7 @@ import { ScrollView } from 'react-native';
 import { getCep } from '../../../api/SharedService';
 import { insertEmpresa, updateEmpresa } from '../../../api/EmpresaService';
 import { TextInputMask } from 'react-native-masked-text';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EmpresaForm({ navigation, route }) {
 
@@ -41,7 +42,11 @@ export default function EmpresaForm({ navigation, route }) {
     cidade: '',
     uf: '',
   }
-
+  const usuario = {
+    id_usuario: '', nome: '', login: '', senha: '', cpf: '', email: '', telefone: '', whatsapp: '', cep: '', endereco: '', numero: '', complemento: '',
+    bairro: '', cidade: '', uf: '', tipo_usuario_id: 1
+  }
+  const [userLogado, setUserLogado] = useState(usuario)
   const [company, setCompany] = useState(empresa)
   const [retorno, setRetorno] = useState(null)
   const [message, setMessage] = useState('')
@@ -66,6 +71,10 @@ export default function EmpresaForm({ navigation, route }) {
 
   useEffect(async () => {
     validaCampos()
+    const store = await AsyncStorage.getItem('TOKEN')
+    const j = JSON.parse(store)
+    const u = j.user
+    setUserLogado({ ...u })
   }, [])
 
   useEffect(async () => {
@@ -81,7 +90,7 @@ export default function EmpresaForm({ navigation, route }) {
       setCompany({ ...route.params.empresa })
     } else {
       navigation.setOptions({ title: 'Inclusão de Empresa' })
-      setCompany({ ...company })
+      setCompany({ ...empresa })
     }
     setVisibleActivityIndicator(false)
 
@@ -140,7 +149,7 @@ export default function EmpresaForm({ navigation, route }) {
           setRetorno(res.status)
           setCompany({ ...empresa })
           setVisibleActivityIndicator(false)
-          navigation.navigate('Empresa', { atualizar: 'S'})
+          navigation.navigate('Empresa', { atualizar: 'S' })
         })
         .catch(err => {
           setMessage(JSON.stringify(err.message ?? err))
@@ -157,7 +166,7 @@ export default function EmpresaForm({ navigation, route }) {
           setRetorno(res)
           setCompany({ ...empresa })
           setVisibleActivityIndicator(false)
-          navigation.navigate('Empresa', { atualizar: 'S'})
+          navigation.navigate('Empresa', { atualizar: 'S' })
         })
         .catch(err => {
           setMessage(JSON.stringify(err.message ?? err))
@@ -465,8 +474,9 @@ export default function EmpresaForm({ navigation, route }) {
                 icon="content-save"
                 mode="contained"
                 color="#3CB371"
+                disabled={userLogado.tipo_usuario_id == 2 && company.id_empresa != ''}
                 onPress={() => salvar()}
-                >
+              >
                 Salvar
               </Button>
             </View>

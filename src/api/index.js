@@ -35,25 +35,25 @@ http.interceptors.response.use(
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.log('ERROR RESPONSE DATA',error.response.data);
-      console.log('ERROR RESPONSE STATUS',error.response.status);
+      // console.log('ERROR RESPONSE DATA',error.response.data);
+      // console.log('ERROR RESPONSE STATUS',error.response.status);
       // console.log('ERROR RESPONSE HEADERS',error.response.headers);
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
-      console.log('ERROR RESPONSE REQUEST',error.request);
+      // console.log('ERROR RESPONSE REQUEST',error.request);
     } else {
       // Something happened in setting up the request that triggered an Error
       // console.log('Error MESSAGE', error.message);
     }
 
-    console.log('REPONSE',error.response)
+    // console.log('REPONSE',error.response)
     const originalRequest = (await error) && error.config ? error.config : null
     const errorStatus = error && error.response ? error.response.status : null
     const errorText = error && error.response ? error.response.data.errors : null
     
-    console.log('ERROR RESPONSE', errorText, errorStatus)
+    // console.log('ERROR RESPONSE', errorText, errorStatus)
     const urlLogout =
       error && error.config ? error.config.baseURL + 'auth/logout' : ''
     const urlLogin =

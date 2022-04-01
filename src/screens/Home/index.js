@@ -76,7 +76,7 @@ export default function Home({ navigation, route }) {
                             icon="file-import"
                             labelStyle={{ fontSize: 30 }}
                             color="#943126"
-                            onPress={() => navigation.navigate('Importador', { controle: empresa })} >
+                            onPress={() => navigation.navigate('Importador', { empresa: empresa })} >
                         </Button>
                     </View>
                 </DataTable.Cell>

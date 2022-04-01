@@ -39,6 +39,8 @@ export default function Controle({ navigation, route }) {
                 await getApi()
             navigation.setOptions({ title: 'Controles Emp: ' + route.params.empresa.id_empresa })
         }
+        if (!searching)
+            await getApi()
     }, [route.params]);
 
     const updatePage = async (page) => {
@@ -50,16 +52,16 @@ export default function Controle({ navigation, route }) {
         try {
             setSearching(true)
             setVisibleActivityIndicator(true)
-            
+
             const result = await getControles(route.params.empresa, page + 1)
             setitemsPerPage(result.per_page)
             setTotalPages(result.last_page - 1)
             setControls(result.data)
-            setSearching(false)
-            setVisibleActivityIndicator(false)
+            ToastAndroid.show('Atualizando...', ToastAndroid.SHORT)
         } catch (error) {
             throw (JSON.stringify(error))
         } finally {
+            setSearching(false)
             setVisibleActivityIndicator(false)
         }
     }

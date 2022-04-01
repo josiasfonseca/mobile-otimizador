@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 250,
         borderWidth: 1,
-        borderRadius: 20
+        borderRadius: 20,
+        marginTop: 20
     },
     viewTitleImportadorCliente: {
         alignItems: 'center',
